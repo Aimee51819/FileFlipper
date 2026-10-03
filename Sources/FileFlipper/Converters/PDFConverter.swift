@@ -7,7 +7,7 @@ enum PDFConverter {
     static func open(_ url: URL) throws -> PDFDocument {
         guard let document = PDFDocument(url: url) else { throw ConversionError.unreadable(url) }
         if document.isLocked {
-            throw ConversionError.message("\(url.lastPathComponent) is password protected")
+            throw ConversionError.message(L("%@ is password protected", url.lastPathComponent))
         }
         return document
     }
@@ -18,7 +18,7 @@ enum PDFConverter {
     /// a folder as "Page 001.png", "Page 002.png", ... (TIFF keeps all pages in one file).
     static func toImages(_ url: URL, type: UTType, ext: String) throws -> [URL] {
         let document = try open(url)
-        guard document.pageCount > 0 else { throw ConversionError.message("\(url.lastPathComponent) has no pages") }
+        guard document.pageCount > 0 else { throw ConversionError.message(L("%@ has no pages", url.lastPathComponent)) }
 
         if document.pageCount == 1 || type == .tiff {
             let output = OutputNaming.next(to: url, ext: ext)
@@ -28,7 +28,7 @@ enum PDFConverter {
             }
             for index in 0..<document.pageCount {
                 guard let page = document.page(at: index), let image = render(page) else {
-                    throw ConversionError.message("Couldn't render page \(index + 1)")
+                    throw ConversionError.message(L("Couldn't render page %@", String(index + 1)))
                 }
                 CGImageDestinationAddImage(destination, image,
                                            [kCGImageDestinationLossyCompressionQuality: 0.9] as CFDictionary)
@@ -59,7 +59,7 @@ enum PDFConverter {
         }
         let text = pages.joined(separator: "\n\n")
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw ConversionError.message("No text found in \(url.lastPathComponent)")
+            throw ConversionError.message(L("No text found in %@", url.lastPathComponent))
         }
         let output = OutputNaming.next(to: url, ext: "txt")
         try text.write(to: output, atomically: true, encoding: .utf8)
@@ -75,7 +75,7 @@ enum PDFConverter {
             pages.append(TextRecognizer.hasTextLayer(page) ? (page.string ?? "") : TextRecognizer.recognize(page))
         }
         guard pages.contains(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
-            throw ConversionError.message("No text found in \(url.lastPathComponent)")
+            throw ConversionError.message(L("No text found in %@", url.lastPathComponent))
         }
         let output = OutputNaming.next(to: url, ext: "md")
         try MarkdownWriter.markdown(fromPlainPages: pages).write(to: output, atomically: true, encoding: .utf8)
@@ -103,7 +103,7 @@ enum PDFConverter {
             combined.append(pageText)
         }
         guard combined.length > 0 else {
-            throw ConversionError.message("No text found in \(url.lastPathComponent)")
+            throw ConversionError.message(L("No text found in %@", url.lastPathComponent))
         }
         let output = OutputNaming.next(to: url, ext: target.ext)
         try DocumentConverter.write(combined, to: output, target: target)
@@ -127,7 +127,7 @@ enum PDFConverter {
                 throw ConversionError.unreadable(url)
             }
         }
-        guard result.pageCount > 0 else { throw ConversionError.message("Nothing to put in the PDF") }
+        guard result.pageCount > 0 else { throw ConversionError.message(L("Nothing to put in the PDF")) }
 
         let output: URL
         if let name {
@@ -176,7 +176,7 @@ enum PDFConverter {
     static func split(_ url: URL) throws -> [URL] {
         let document = try open(url)
         guard document.pageCount > 1 else {
-            throw ConversionError.message("\(url.lastPathComponent) only has one page")
+            throw ConversionError.message(L("%@ only has one page", url.lastPathComponent))
         }
         let folder = try OutputNaming.makeFolder(next: url, suffix: " (pages)")
         for index in 0..<document.pageCount {

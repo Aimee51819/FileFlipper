@@ -174,14 +174,14 @@ final class BubbleArcView: NSView {
         let text: String
         let accent: String
         if let hovered, items.indices.contains(hovered) {
-            text = items[hovered].detail ?? "Save as \(items[hovered].title)"
+            text = items[hovered].detail ?? L("Save as %@", items[hovered].title)
             accent = ""
         } else if items.isEmpty {
-            text = isTools ? "No tools for this file type" : "No formats for this file type"
+            text = isTools ? L("No tools for this file type") : L("No formats for this file type")
             accent = ""
         } else if let first = urls.first {
-            text = urls.count == 1 ? first.lastPathComponent : "\(urls.count) files"
-            accent = isTools ? "TOOLS" : "CONVERT"
+            text = urls.count == 1 ? first.lastPathComponent : L("%@ files", String(urls.count))
+            accent = isTools ? L("TOOLS") : L("CONVERT")
         } else {
             return
         }

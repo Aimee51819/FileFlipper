@@ -4,7 +4,7 @@ import AppKit
 /// an area (optionally locked to an aspect ratio) and returns that area in image pixels.
 enum CropWindow {
     private static let aspects: [(title: String, ratio: CGFloat?)] = [
-        ("Free", nil), ("1:1", 1), ("4:3", 4.0 / 3), ("3:2", 3.0 / 2), ("16:9", 16.0 / 9), ("9:16", 9.0 / 16),
+        (L("Free"), nil), ("1:1", 1), ("4:3", 4.0 / 3), ("3:2", 3.0 / 2), ("16:9", 16.0 / 9), ("9:16", 9.0 / 16),
     ]
 
     /// Runs modally. Returns the crop rectangle (top-left origin, pixels) or `nil` if cancelled.
@@ -54,14 +54,14 @@ enum CropWindow {
         handler.sizeLabel = sizeLabel
 
         // Actions, right-aligned.
-        let save = PillButton(title: "Crop", symbol: "crop", style: .primary, height: rowHeight)
+        let save = PillButton(title: L("Crop"), symbol: "crop", style: .primary, height: rowHeight)
         save.target = handler
         save.action = #selector(Handler.crop(_:))
         save.keyEquivalent = "\r"
         save.setFrameOrigin(NSPoint(x: contentSize.width - margin - save.frame.width, y: margin))
         content.addSubview(save)
 
-        let cancel = PillButton(title: "Cancel", style: .secondary, height: rowHeight)
+        let cancel = PillButton(title: L("Cancel"), style: .secondary, height: rowHeight)
         cancel.target = handler
         cancel.action = #selector(Handler.cancel(_:))
         cancel.keyEquivalent = "\u{1b}"
@@ -70,7 +70,7 @@ enum CropWindow {
 
         let window = NSWindow(contentRect: content.frame, styleMask: [.titled, .closable],
                               backing: .buffered, defer: false)
-        window.title = "Crop “\(fileName)”"
+        window.title = L("Crop “%@”", fileName)
         window.titlebarAppearsTransparent = true
         window.backgroundColor = Palette.cream
         window.appearance = NSAppearance(named: .aqua)

@@ -62,7 +62,7 @@ enum MediaConverter {
     private static func extractAudio(_ url: URL, suffix: String) throws -> URL {
         let asset = AVURLAsset(url: url)
         guard !asset.tracks(withMediaType: .audio).isEmpty else {
-            throw ConversionError.message("\(url.lastPathComponent) has no audio")
+            throw ConversionError.message(L("%@ has no audio", url.lastPathComponent))
         }
         return try export(url, preset: AVAssetExportPresetAppleM4A, fileType: .m4a, ext: "m4a", suffix: suffix)
     }
@@ -73,7 +73,7 @@ enum MediaConverter {
         guard let videoTrack = asset.tracks(withMediaType: .video).first,
               let track = composition.addMutableTrack(withMediaType: .video,
                                                       preferredTrackID: kCMPersistentTrackID_Invalid) else {
-            throw ConversionError.message("\(url.lastPathComponent) has no video")
+            throw ConversionError.message(L("%@ has no video", url.lastPathComponent))
         }
         try track.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: videoTrack, at: .zero)
         track.preferredTransform = videoTrack.preferredTransform
@@ -114,7 +114,7 @@ enum MediaConverter {
                 frames.append(frame)
             }
         }
-        guard !frames.isEmpty else { throw ConversionError.message("Couldn't read frames from \(url.lastPathComponent)") }
+        guard !frames.isEmpty else { throw ConversionError.message(L("Couldn't read frames from %@", url.lastPathComponent)) }
 
         let output = OutputNaming.next(to: url, ext: "gif")
         guard let destination = CGImageDestinationCreateWithURL(output as CFURL, UTType.gif.identifier as CFString,
@@ -144,7 +144,7 @@ enum MediaConverter {
         let inputFormat = input.processingFormat
         guard let monoFormat = AVAudioFormat(standardFormatWithSampleRate: inputFormat.sampleRate, channels: 1),
               let converter = AVAudioConverter(from: inputFormat, to: monoFormat) else {
-            throw ConversionError.unsupported("Mono conversion")
+            throw ConversionError.unsupported(L("Mono conversion"))
         }
         converter.downmix = true
 
@@ -163,7 +163,7 @@ enum MediaConverter {
         let capacity: AVAudioFrameCount = 32_768
         guard let inBuffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: capacity),
               let outBuffer = AVAudioPCMBuffer(pcmFormat: monoFormat, frameCapacity: capacity) else {
-            throw ConversionError.message("Couldn't allocate audio buffers")
+            throw ConversionError.message(L("Couldn't allocate audio buffers"))
         }
         while input.framePosition < input.length {
             try input.read(into: inBuffer)
@@ -192,7 +192,7 @@ enum MediaConverter {
         let file = try AVAudioFile(forWriting: output, settings: settings,
                                    commonFormat: format.commonFormat, interleaved: format.isInterleaved)
         guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 32_768) else {
-            throw ConversionError.message("Couldn't allocate an audio buffer")
+            throw ConversionError.message(L("Couldn't allocate an audio buffer"))
         }
         while input.framePosition < input.length {
             try input.read(into: buffer)
@@ -220,7 +220,7 @@ enum MediaConverter {
 
         guard session.status == .completed else {
             try? FileManager.default.removeItem(at: output)
-            throw ConversionError.message(session.error?.localizedDescription ?? "Export failed")
+            throw ConversionError.message(session.error?.localizedDescription ?? L("Export failed"))
         }
         return output
     }

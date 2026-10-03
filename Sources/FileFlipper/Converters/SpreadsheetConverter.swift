@@ -80,7 +80,7 @@ enum SpreadsheetConverter {
             })
             sheets.append(Sheet(name: name, rows: rows, numericColumns: numeric))
         }
-        guard !sheets.isEmpty else { throw ConversionError.message("\(url.lastPathComponent) has no data") }
+        guard !sheets.isEmpty else { throw ConversionError.message(L("%@ has no data", url.lastPathComponent)) }
         return sheets
     }
 

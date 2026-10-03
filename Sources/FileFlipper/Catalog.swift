@@ -68,7 +68,7 @@ enum Catalog {
                         try [ImageConverter.convert(url, to: target.type, ext: target.ext)]
                     })
                 }
-            items.append(PickerItem(title: "PDF", action: perFile(kind) { url in
+            items.append(PickerItem(title: L("PDF"), action: perFile(kind) { url in
                 try [PDFConverter.makePDF(from: [url], near: url)]
             }))
             return items
@@ -81,10 +81,10 @@ enum Catalog {
                     try PDFConverter.toImages(url, type: target.type, ext: target.ext)
                 })
             }
-            items.append(PickerItem(title: "TXT", action: perFile(kind) { url in
+            items.append(PickerItem(title: L("TXT"), action: perFile(kind) { url in
                 try [PDFConverter.toText(url)]
             }))
-            items.append(PickerItem(title: "MD", detail: "Save as Markdown (OCR for scans)", action: perFile(kind) { url in
+            items.append(PickerItem(title: L("MD"), detail: L("Save as Markdown (OCR for scans)"), action: perFile(kind) { url in
                 try [PDFConverter.toMarkdown(url)]
             }))
             for target in DocumentConverter.targets where target.ext == "docx" || target.ext == "rtf" {
@@ -98,27 +98,28 @@ enum Catalog {
             return DocumentConverter.targets
                 .filter { !$0.matches(ext: sourceExt) }
                 .map { target in
-                    PickerItem(title: target.title, runsOnMain: true, action: perFile(kind) { url in
+                    PickerItem(title: target.title, detail: target.ext == "md" ? L("Markdown, ready for AI") : nil,
+                               runsOnMain: true, action: perFile(kind) { url in
                         try [DocumentConverter.convert(url, to: target)]
                     })
                 }
 
         case .presentation:
             return [
-                PickerItem(title: "PDF", detail: "One page per slide", runsOnMain: true, action: perFile(kind) { url in
+                PickerItem(title: L("PDF"), detail: L("One page per slide"), runsOnMain: true, action: perFile(kind) { url in
                     try [PresentationConverter.toPDF(url)]
                 }),
-                PickerItem(title: "MD", detail: "Slide titles and text as Markdown", action: perFile(kind) { url in
+                PickerItem(title: L("MD"), detail: L("Slide titles and text as Markdown"), action: perFile(kind) { url in
                     try [PresentationConverter.toMarkdown(url)]
                 }),
             ]
 
         case .spreadsheet:
             return [
-                PickerItem(title: "PDF", detail: "Every sheet as a table", runsOnMain: true, action: perFile(kind) { url in
+                PickerItem(title: L("PDF"), detail: L("Every sheet as a table"), runsOnMain: true, action: perFile(kind) { url in
                     try [SpreadsheetConverter.toPDF(url)]
                 }),
-                PickerItem(title: "MD", detail: "Every sheet as a Markdown table", action: perFile(kind) { url in
+                PickerItem(title: L("MD"), detail: L("Every sheet as a Markdown table"), action: perFile(kind) { url in
                     try [SpreadsheetConverter.toMarkdown(url)]
                 }),
             ]
@@ -153,70 +154,70 @@ enum Catalog {
         switch kind {
         case .image:
             items = [
-                PickerItem(title: "Crop", symbol: "crop", detail: "Crop to a selected area", runsOnMain: true,
+                PickerItem(title: L("Crop"), symbol: "crop", detail: L("Crop to a selected area"), runsOnMain: true,
                           action: perFile(kind) { try [ImageConverter.crop($0)] }),
-                PickerItem(title: "Compress", symbol: "rectangle.compress.vertical", detail: "Make the image smaller",
+                PickerItem(title: L("Compress"), symbol: "rectangle.compress.vertical", detail: L("Make the image smaller"),
                           action: perFile(kind) { try [ImageConverter.compress($0)] }),
-                PickerItem(title: "Clean", symbol: "location.slash", detail: "Remove GPS and camera info",
+                PickerItem(title: L("Clean"), symbol: "location.slash", detail: L("Remove GPS and camera info"),
                           action: perFile(kind) { try [ImageConverter.stripMetadata($0)] }),
-                PickerItem(title: "50%", symbol: "arrow.down.right.and.arrow.up.left", detail: "Half the width and height",
+                PickerItem(title: L("50%"), symbol: "arrow.down.right.and.arrow.up.left", detail: L("Half the width and height"),
                           action: perFile(kind) { try [ImageConverter.resizeHalf($0)] }),
-                PickerItem(title: "Rotate", symbol: "rotate.right", detail: "Rotate 90° clockwise",
+                PickerItem(title: L("Rotate"), symbol: "rotate.right", detail: L("Rotate 90° clockwise"),
                           action: perFile(kind) { try [ImageConverter.rotate($0)] }),
-                PickerItem(title: "Flip", symbol: "arrow.left.and.right", detail: "Mirror left to right",
+                PickerItem(title: L("Flip"), symbol: "arrow.left.and.right", detail: L("Mirror left to right"),
                           action: perFile(kind) { try [ImageConverter.flip($0)] }),
-                PickerItem(title: "B&W", symbol: "circle.lefthalf.filled", detail: "Black and white",
+                PickerItem(title: L("B&W"), symbol: "circle.lefthalf.filled", detail: L("Black and white"),
                           action: perFile(kind) { try [ImageConverter.grayscale($0)] }),
-                PickerItem(title: "Cutout", symbol: "scissors", detail: "Remove the background",
+                PickerItem(title: L("Cutout"), symbol: "scissors", detail: L("Remove the background"),
                           action: perFile(kind) { try [ImageConverter.removeBackground($0)] }),
             ]
             if count > 1 {
-                items.append(PickerItem(title: "Merge", symbol: "square.stack", detail: "Combine into one PDF",
+                items.append(PickerItem(title: L("Merge"), symbol: "square.stack", detail: L("Combine into one PDF"),
                                        action: merge(kind)))
             }
 
         case .pdf:
             items = [
-                PickerItem(title: "Compress", symbol: "rectangle.compress.vertical", detail: "Make the PDF smaller",
+                PickerItem(title: L("Compress"), symbol: "rectangle.compress.vertical", detail: L("Make the PDF smaller"),
                           action: perFile(kind) { try [PDFConverter.compress($0)] }),
-                PickerItem(title: "Clean", symbol: "person.crop.circle.badge.xmark", detail: "Remove author info",
+                PickerItem(title: L("Clean"), symbol: "person.crop.circle.badge.xmark", detail: L("Remove author info"),
                           action: perFile(kind) { try [PDFConverter.stripMetadata($0)] }),
-                PickerItem(title: "Rotate", symbol: "rotate.right", detail: "Rotate every page 90°",
+                PickerItem(title: L("Rotate"), symbol: "rotate.right", detail: L("Rotate every page 90°"),
                           action: perFile(kind) { try [PDFConverter.rotate($0)] }),
-                PickerItem(title: "Split", symbol: "square.split.2x1", detail: "One PDF per page",
+                PickerItem(title: L("Split"), symbol: "square.split.2x1", detail: L("One PDF per page"),
                           action: perFile(kind) { try PDFConverter.split($0) }),
-                PickerItem(title: "Text", symbol: "text.viewfinder", detail: "Extract text, OCR for scans",
+                PickerItem(title: L("Text"), symbol: "text.viewfinder", detail: L("Extract text, OCR for scans"),
                           action: perFile(kind) { try [PDFConverter.toText($0)] }),
             ]
             if count > 1 {
-                items.append(PickerItem(title: "Merge", symbol: "square.stack", detail: "Combine the PDFs into one", action: merge(kind)))
+                items.append(PickerItem(title: L("Merge"), symbol: "square.stack", detail: L("Combine the PDFs into one"), action: merge(kind)))
             }
 
         case .video:
             items = [
-                PickerItem(title: "Compress", symbol: "rectangle.compress.vertical", detail: "Make the video smaller",
+                PickerItem(title: L("Compress"), symbol: "rectangle.compress.vertical", detail: L("Make the video smaller"),
                           action: perFile(kind) { try [MediaConverter.compressVideo($0)] }),
-                PickerItem(title: "720p", symbol: "arrow.down.right.and.arrow.up.left", detail: "Convert to 720p",
+                PickerItem(title: L("720p"), symbol: "arrow.down.right.and.arrow.up.left", detail: L("Convert to 720p"),
                           action: perFile(kind) { try [MediaConverter.resizeVideo720($0)] }),
-                PickerItem(title: "Mute", symbol: "speaker.slash", detail: "Remove the sound",
+                PickerItem(title: L("Mute"), symbol: "speaker.slash", detail: L("Remove the sound"),
                           action: perFile(kind) { try [MediaConverter.mute($0)] }),
-                PickerItem(title: "Audio", symbol: "music.note", detail: "Keep only the sound (M4A)",
+                PickerItem(title: L("Audio"), symbol: "music.note", detail: L("Keep only the sound (M4A)"),
                           action: perFile(kind) { try [MediaConverter.extractAudio($0)] }),
-                PickerItem(title: "Frame", symbol: "camera", detail: "Save one frame as an image",
+                PickerItem(title: L("Frame"), symbol: "camera", detail: L("Save one frame as an image"),
                           action: perFile(kind) { try [MediaConverter.snapshot($0)] }),
             ]
 
         case .audio:
             items = [
-                PickerItem(title: "Compress", symbol: "rectangle.compress.vertical", detail: "Make the file smaller",
+                PickerItem(title: L("Compress"), symbol: "rectangle.compress.vertical", detail: L("Make the file smaller"),
                           action: perFile(kind) { try [MediaConverter.compressAudio($0)] }),
-                PickerItem(title: "Mono", symbol: "speaker.wave.1", detail: "Convert to mono",
+                PickerItem(title: L("Mono"), symbol: "speaker.wave.1", detail: L("Convert to mono"),
                           action: perFile(kind) { try [MediaConverter.mono($0)] }),
             ]
 
         case .document:
             items = [
-                PickerItem(title: "Plain", symbol: "textformat", detail: "Remove all formatting", runsOnMain: true,
+                PickerItem(title: L("Plain"), symbol: "textformat", detail: L("Remove all formatting"), runsOnMain: true,
                           action: perFile(kind) { try [DocumentConverter.stripFormatting($0)] }),
             ]
 

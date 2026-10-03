@@ -10,6 +10,7 @@
 		0013F07055C24338EAADC553 /* PickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49551220DC62E8CB9F602282 /* PickerController.swift */; };
 		1869B03C246D432F7AADA7FC /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF4456F32879EA808220458 /* Catalog.swift */; };
 		1D779A28F1069151159EF914 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB634E59C9C087799152A376 /* Assets.xcassets */; };
+		29E6F48310EE79D0C91EB754 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5FDB457F0D3C2B41FA4B2BD /* Localizable.strings */; };
 		2BAEA1F88D6D33DF11BD14D8 /* PDFConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B7C0DB90D5E63FE8FC43B71 /* PDFConverter.swift */; };
 		2E1A179617C61692948D57F2 /* DocumentConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AC9D30DC283FD7AA831DD8 /* DocumentConverter.swift */; };
 		31E17C5638281008C5F295DF /* MediaConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9E4FA4CBC51E864B52D7A7 /* MediaConverter.swift */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		07AC9D30DC283FD7AA831DD8 /* DocumentConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConverter.swift; sourceTree = "<group>"; };
 		08A7E99794653186D9A31AE0 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
+		1380DC56B12AEE4675A0526D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1B70C481D772C4AEE6F49F8E /* MarkdownWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownWriter.swift; sourceTree = "<group>"; };
 		1EF4456F32879EA808220458 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		2CF71A1F09E8BFE1430DBEF9 /* FolderAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderAccess.swift; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 		9A370696F3CE434BD21BBCF9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9B7C0DB90D5E63FE8FC43B71 /* PDFConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFConverter.swift; sourceTree = "<group>"; };
 		9C4EBAEC45B418DC6B9E3B4A /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		C0643E96B2DA088EC17728F3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		DB634E59C9C087799152A376 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCE2F9F0CC468FFA96988D8C /* DragMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragMonitor.swift; sourceTree = "<group>"; };
 		E382BBA894EB377623537878 /* SpreadsheetConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetConverter.swift; sourceTree = "<group>"; };
@@ -97,6 +100,14 @@
 			path = FileFlipper;
 			sourceTree = "<group>";
 		};
+		824D12F62E9204505B2B2CF6 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				A5FDB457F0D3C2B41FA4B2BD /* Localizable.strings */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		863E7BD6BE394800CAB2EEB3 /* Converters */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +131,7 @@
 			children = (
 				DB634E59C9C087799152A376 /* Assets.xcassets */,
 				74983FA65F351924CA0FDF2D /* PrivacyInfo.xcprivacy */,
+				824D12F62E9204505B2B2CF6 /* Localization */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -175,6 +187,7 @@
 			knownRegions = (
 				Base,
 				en,
+				"zh-Hans",
 			);
 			mainGroup = D763CF81B0FC26D48740B8B4;
 			minimizedProjectReferenceProxies = 1;
@@ -194,6 +207,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D779A28F1069151159EF914 /* Assets.xcassets in Resources */,
+				29E6F48310EE79D0C91EB754 /* Localizable.strings in Resources */,
 				A71EB1E7B230ECC0F7E5E573 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,6 +246,18 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		A5FDB457F0D3C2B41FA4B2BD /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1380DC56B12AEE4675A0526D /* en */,
+				C0643E96B2DA088EC17728F3 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		281B7D059696604CB707B905 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -267,7 +293,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -374,7 +400,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

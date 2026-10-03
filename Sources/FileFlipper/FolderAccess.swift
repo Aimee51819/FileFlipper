@@ -75,11 +75,8 @@ final class FolderAccess {
         panel.allowsMultipleSelection = false
         panel.canCreateDirectories = false
         panel.directoryURL = directory
-        panel.prompt = "Grant Access"
-        panel.message = """
-        FileFlipper needs your permission to save converted files in “\(directory.lastPathComponent)”. \
-        Tip: choose your Home folder to allow every folder inside it at once.
-        """
+        panel.prompt = L("Grant Access")
+        panel.message = L("FileFlipper needs your permission to save converted files in “%@”. Tip: choose your Home folder to allow every folder inside it at once.", directory.lastPathComponent)
         guard panel.runModal() == .OK, let chosen = panel.url else { return nil }
 
         do {

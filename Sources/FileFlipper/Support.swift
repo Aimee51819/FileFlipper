@@ -1,5 +1,15 @@
 import Foundation
 
+/// Localized text: the English text is the key; translations live in Localizable.strings.
+func L(_ key: String) -> String {
+    NSLocalizedString(key, comment: "")
+}
+
+/// Localized text with `%@` placeholders.
+func L(_ key: String, _ arguments: CVarArg...) -> String {
+    String(format: NSLocalizedString(key, comment: ""), arguments: arguments)
+}
+
 enum ConversionError: LocalizedError {
     case unreadable(URL)
     case writeFailed(URL)
@@ -10,10 +20,10 @@ enum ConversionError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .cancelled: return "Cancelled"
-        case .unreadable(let url): return "Couldn't read \(url.lastPathComponent)"
-        case .writeFailed(let url): return "Couldn't write \(url.lastPathComponent)"
-        case .unsupported(let what): return "\(what) isn't supported on this Mac"
+        case .cancelled: return L("Cancelled")
+        case .unreadable(let url): return L("Couldn't read %@", url.lastPathComponent)
+        case .writeFailed(let url): return L("Couldn't write %@", url.lastPathComponent)
+        case .unsupported(let what): return L("%@ isn't supported on this Mac", what)
         case .message(let text): return text
         }
     }
@@ -69,6 +79,6 @@ enum FileInfo {
     static func requireSmaller(_ output: URL, than original: URL) throws -> URL {
         guard bytes(of: output) >= bytes(of: original) else { return output }
         try? FileManager.default.removeItem(at: output)
-        throw ConversionError.message("\(original.lastPathComponent) is already as small as it gets")
+        throw ConversionError.message(L("%@ is already as small as it gets", original.lastPathComponent))
     }
 }

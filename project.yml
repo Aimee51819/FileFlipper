@@ -2,13 +2,14 @@
 # only need XcodeGen (brew install xcodegen) if you change this file: run `xcodegen`.
 name: FileFlipper
 options:
+  developmentLanguage: en
   deploymentTarget:
     macOS: "14.0"
   createIntermediateGroups: true
 settings:
   base:
     MARKETING_VERSION: 1.5.0
-    CURRENT_PROJECT_VERSION: 8
+    CURRENT_PROJECT_VERSION: 9
     SWIFT_VERSION: "5.0"
 targets:
   FileFlipper:
@@ -19,6 +20,8 @@ targets:
       - path: Sources/FileFlipper
       - path: Resources/Assets.xcassets
       - path: Resources/PrivacyInfo.xcprivacy
+        buildPhase: resources
+      - path: Resources/Localization
         buildPhase: resources
     settings:
       base:

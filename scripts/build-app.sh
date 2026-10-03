@@ -40,7 +40,7 @@ else
   cp "$BIN_DIR/FileFlipper" "$APP/Contents/MacOS/FileFlipper"
   sed -e 's/$(EXECUTABLE_NAME)/FileFlipper/; s/$(PRODUCT_NAME)/FileFlipper/' \
       -e 's/$(PRODUCT_BUNDLE_IDENTIFIER)/com.aimeesun.fileflipper/' \
-      -e 's/$(MARKETING_VERSION)/1.5.0/; s/$(CURRENT_PROJECT_VERSION)/8/' \
+      -e 's/$(MARKETING_VERSION)/1.5.0/; s/$(CURRENT_PROJECT_VERSION)/9/' \
       -e 's/$(MACOSX_DEPLOYMENT_TARGET)/14.0/' \
       Resources/Info.plist > "$APP/Contents/Info.plist"
   # Icon for the command-line build

@@ -56,7 +56,7 @@ struct ZipArchive {
     private mutating func readCentralDirectory() throws {
         // The end-of-central-directory record sits in the last 64 KB + 22 bytes.
         let minimum = 22
-        guard data.count >= minimum else { throw ConversionError.message("Not a valid Office file") }
+        guard data.count >= minimum else { throw ConversionError.message(L("Not a valid Office file")) }
         var end = -1
         var position = data.count - minimum
         let lowest = max(0, data.count - 65_557)
@@ -64,7 +64,7 @@ struct ZipArchive {
             if uint32(at: position) == 0x0605_4b50 { end = position; break }
             position -= 1
         }
-        guard end >= 0 else { throw ConversionError.message("Not a valid Office file") }
+        guard end >= 0 else { throw ConversionError.message(L("Not a valid Office file")) }
 
         let count = Int(uint16(at: end + 10))
         var offset = Int(uint32(at: end + 16))
@@ -84,7 +84,7 @@ struct ZipArchive {
             }
             offset += 46 + nameLength + extraLength + commentLength
         }
-        guard !entries.isEmpty else { throw ConversionError.message("Not a valid Office file") }
+        guard !entries.isEmpty else { throw ConversionError.message(L("Not a valid Office file")) }
     }
 
     private func uint16(at offset: Int) -> UInt16 {

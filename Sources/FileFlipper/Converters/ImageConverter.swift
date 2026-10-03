@@ -132,12 +132,12 @@ enum ImageConverter {
         guard let context = CGContext(data: nil, width: image.width, height: image.height, bitsPerComponent: 8,
                                       bytesPerRow: 0, space: CGColorSpaceCreateDeviceGray(),
                                       bitmapInfo: CGImageAlphaInfo.none.rawValue) else {
-            throw ConversionError.message("Couldn't create a grayscale canvas")
+            throw ConversionError.message(L("Couldn't create a grayscale canvas"))
         }
         context.setFillColor(gray: 1, alpha: 1)
         context.fill(CGRect(x: 0, y: 0, width: image.width, height: image.height))
         context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
-        guard let gray = context.makeImage() else { throw ConversionError.message("Couldn't render the image") }
+        guard let gray = context.makeImage() else { throw ConversionError.message(L("Couldn't render the image")) }
         return try save(gray, near: url, suffix: " (grayscale)", like: source)
     }
 
@@ -211,7 +211,7 @@ enum ImageConverter {
             }
         }
         guard let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
-            throw ConversionError.message("Couldn't decode the image")
+            throw ConversionError.message(L("Couldn't decode the image"))
         }
         return image
     }
@@ -220,11 +220,11 @@ enum ImageConverter {
         guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
                                       space: CGColorSpace(name: CGColorSpace.sRGB)!,
                                       bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
-            throw ConversionError.message("Couldn't create a canvas")
+            throw ConversionError.message(L("Couldn't create a canvas"))
         }
         context.interpolationQuality = .high
         body(context)
-        guard let image = context.makeImage() else { throw ConversionError.message("Couldn't render the image") }
+        guard let image = context.makeImage() else { throw ConversionError.message(L("Couldn't render the image")) }
         return image
     }
 

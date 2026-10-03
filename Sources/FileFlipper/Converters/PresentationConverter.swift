@@ -162,7 +162,7 @@ enum PresentationConverter {
             if root.attr("show") == "0" { continue }
             slides.append(readSlide(root, path: path, archive: archive))
         }
-        guard !slides.isEmpty else { throw ConversionError.message("\(url.lastPathComponent) has no slides") }
+        guard !slides.isEmpty else { throw ConversionError.message(L("%@ has no slides", url.lastPathComponent)) }
         return Deck(size: size, slides: slides)
     }
 

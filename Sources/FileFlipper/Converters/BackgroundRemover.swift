@@ -163,13 +163,13 @@ enum BackgroundRemover {
         let handler = VNImageRequestHandler(cgImage: image)
         try handler.perform([request])
         guard let result = request.results?.first, !result.allInstances.isEmpty else {
-            throw ConversionError.message("No subject found in \(name)")
+            throw ConversionError.message(L("No subject found in %@", name))
         }
         let buffer = try result.generateMaskedImage(ofInstances: result.allInstances, from: handler,
                                                     croppedToInstancesExtent: false)
         let ciImage = CIImage(cvPixelBuffer: buffer)
         guard let cutout = CIContext().createCGImage(ciImage, from: ciImage.extent) else {
-            throw ConversionError.message("Couldn't render the cutout")
+            throw ConversionError.message(L("Couldn't render the cutout"))
         }
         return cutout
     }

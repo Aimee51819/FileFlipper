@@ -57,7 +57,7 @@ App Store Connect 里的 App 记录已经建好了：
 ### B1. App 信息
 | 栏目 | 填写 |
 |---|---|
-| 副标题 | `Convert files right in Finder` |
+| 副标题 | `Markdown for AI, in Finder`（或保留原来的 `Convert files right in Finder`） |
 | 类别 → 主要 | **工具（Utilities）** |
 | 类别 → 次要 | **效率（Productivity）** |
 | 内容版权 | 选「不包含、显示或访问第三方内容」 |
@@ -79,7 +79,7 @@ App Store Connect 里的 App 记录已经建好了：
 ### B5. 版本页面（左侧「macOS App」下的 1.0 / 准备提交）
 | 栏目 | 填写 |
 |---|---|
-| 截图 | 上传 `docs/app-store-screenshots/` 里的 4 张图（尺寸 2880×1800，已经做好） |
+| 截图 | 上传 `docs/app-store-screenshots/` 里的 5 张图（尺寸 2880×1800，已经做好）。建议把 `5-markdown.png` 放在**第 1 张**，突出「一键转 Markdown」 |
 | 宣传文本 | 见下方「文案」 |
 | 描述 | 见下方「文案」 |
 | 关键词 | `convert,converter,file,finder,image,pdf,heic,jpg,png,webp,docx,pptx,xlsx,markdown,compress,crop,ocr` |
@@ -109,12 +109,15 @@ App Store Connect 里的 App 记录已经建好了：
 
 **宣传文本 / Promotional Text**（170 字符以内）
 ```
-Drag a file, hold Shift, and drop it on a format. Crop, compress and remove backgrounds without opening another app.
+One-click Markdown for AI: turn Word, PDF, PowerPoint and Excel into clean Markdown with fewer tokens. Plus quick conversions right in Finder.
 ```
 
 **描述 / Description**
 ```
 FileFlipper is a free, open-source file converter that works inside Finder.
+
+ONE-CLICK MARKDOWN FOR AI
+Turn Word, PDF, PowerPoint and Excel files into clean Markdown in seconds, ready to paste into your AI assistant. Markdown keeps headings, lists and tables while dropping layout clutter, so it usually takes fewer tokens than uploading the original file, and the AI understands the structure better. Scanned PDFs are read with on-device OCR.
 
 Pick up a file, press Shift, and a curved row of icon buttons appears above your cursor. Flick toward JPG, PDF, MP4 or any other format, let go, and a new copy appears in the same folder. The original stays untouched. Press Option + Shift for quick edits instead.
 
@@ -150,6 +153,60 @@ To test:
 4. Hold Option + Shift while dragging to see tools (Crop opens a small crop window).
 
 The app is sandboxed. The first time it saves a file, it shows an Open panel asking for access to the folder; choose the Home folder to grant access once. No account, login or network connection is needed.
+```
+
+---
+
+## 中文版（简体中文）App Store 页面
+
+App 本身已经支持简体中文：用户的 Mac 系统语言是中文时，菜单、按钮、提示都会自动显示中文。App Store 页面也可以单独设置中文版：
+
+1. App Store Connect → FileFlipper → **App 信息** → 右上角语言下拉菜单（现在是「英语（美国）」）→ **添加语言** → 选 **简体中文**。
+2. 切换到「简体中文」，填写下面这些（英文版不受影响）：
+
+| 栏目 | 填写 |
+|---|---|
+| 名称 | `FileFlipper` |
+| 副标题 | `一键转Markdown·喂AI更省` |
+| 宣传文本 | 见下方 |
+| 描述 | 见下方 |
+| 关键词 | `格式转换,文件转换,转换器,图片转换,PDF转换,HEIC转JPG,Markdown,转MD,Word转PDF,PPT转PDF,Excel转PDF,压缩,裁剪,抠图,OCR,文字识别,AI` |
+| 截图 | 上传 `docs/app-store-screenshots/zh-Hans/` 里的 5 张中文截图（建议 `5-markdown.png` 放第 1 张） |
+
+> ⚠️ 上架**中国大陆区**需要 **ICP 备案号**（见 B2）。没有备案的话，中文页面仍然会给台湾、香港、新加坡、马来西亚等地区的中文用户看到。
+
+**宣传文本**
+```
+一键转 Markdown，喂给 AI 更省 token：Word、PDF、PPT、Excel 秒变干净的 Markdown。还能在 Finder 里直接转格式、裁剪、压缩、抠图。
+```
+
+**描述**
+```
+FileFlipper 是一个免费、开源的 Mac 文件转换工具，直接在 Finder 里使用。
+
+拖动文件时按住 Shift，鼠标上方会弹出一排带图标的圆形按钮。往想要的格式方向一拖、松开鼠标，新文件就保存在原文件旁边，原文件不会被改动。拖动时按住 Option + Shift，则显示这类文件能用的快捷工具。
+
+一键转 MARKDOWN，喂给 AI 更省 TOKEN
+把 Word、PDF、PPT、Excel 几秒钟转成干净的 Markdown，直接粘贴给 AI 助手。Markdown 保留标题、列表和表格，去掉排版上的冗余，通常比直接上传原文件占用更少的 token，AI 也更容易理解文档结构。扫描版 PDF 会用本机 OCR 自动识别文字。
+
+格式转换
+• 图片：JPG、PNG、HEIC、WEBP、TIFF、GIF、BMP、PDF
+• PDF：转图片、文字、Markdown、Word、RTF（扫描件自动 OCR，支持中文）
+• 文档：DOCX、PDF、RTF、Markdown、TXT、HTML、ODT、DOC
+• PPT 和 Excel：转 PDF 或 Markdown
+• 视频：MP4、MOV、GIF 动图、只提取音频
+• 音频：M4A、WAV、AIFF、CAF
+
+快捷工具
+• 图片：裁剪（多种比例）、压缩、抠图、去除定位和相机信息、缩小一半、旋转、翻转、黑白、合并成 PDF
+• PDF：压缩、按页拆分、提取文字、旋转、合并、去除作者信息
+• 视频：压缩、转 720p、静音、提取音频、截帧
+• 音频：压缩、转单声道
+
+免费、开源、保护隐私
+没有广告，不用注册，没有次数限制，没有内购。全部代码在 GitHub 上以 MIT 许可证开源。文件不会上传，也不收集任何数据，所有处理都用苹果系统自带的功能在你的 Mac 上完成。
+
+FileFlipper 待在菜单栏里，可以从菜单栏图标暂停它，或设为开机启动。
 ```
 
 ---

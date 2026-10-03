@@ -1,12 +1,16 @@
 # FileFlipper — Quick Edit for Mac
 
-**在 Finder 里直接转换文件格式，不用打开任何软件。**
-**A free, open-source file converter that works inside Finder.**
+**在 Finder 里直接转换文件格式，不用打开任何软件。一键转 Markdown，喂给 AI 更省 token。**
+**A free, open-source file converter that works inside Finder. One-click Markdown for AI — fewer tokens.**
 
 <p align="center">
   <img src="docs/picker-convert.png" width="360" alt="Format bubbles">
   &nbsp;&nbsp;
   <img src="docs/picker-tools.png" width="360" alt="Tool bubbles">
+</p>
+
+<p align="center">
+  <img src="docs/markdown-for-ai.png" width="740" alt="One-click Markdown for AI">
 </p>
 
 <p align="center">
@@ -28,11 +32,27 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 - 📸 照片 HEIC 转 JPG、PNG 转 PDF
 - 📄 Word 转 PDF、PDF 转图片或文字
-- 📊 PPT、Excel 转 PDF；所有文档一键转 Markdown
+- ⭐ **所有文档一键转 Markdown**（喂给 AI 更省 token）；PPT、Excel 转 PDF
 - 🎬 视频转 GIF、视频提取音频
 - ✂️ 裁剪图片、🗜 压缩图片 / PDF / 视频、抠图去背景、合并多个 PDF ……
 
 **所有处理都在你自己的 Mac 上完成，文件不会上传到任何地方，也不需要联网。**
+
+### ⭐ 一键转 Markdown：喂给 AI 更省 token
+
+把 Word、PDF、PPT、Excel 拖一下、按住 Shift，选 **MD**，几秒钟就得到一份干净的 Markdown 文件，可以直接粘贴给 ChatGPT、Claude、Gemini、DeepSeek、Kimi 等 AI。
+
+- **更省 token**：Markdown 是纯文本，只用很少的符号（`#`、`-`、`|`）表示标题、列表和表格。和直接上传 PDF / Word、或者粘贴网页内容相比，通常占用更少的 token，同样的额度能塞进更多内容。
+- **AI 读得更准**：标题层级、列表、表格结构都保留下来，AI 更容易理解文档结构，回答更准确。
+- **扫描件也行**：没有文字层的扫描 PDF 会自动用苹果自带的 OCR 识别文字（支持中英文）。
+- **全程离线**：转换在你的 Mac 上完成，文件不用先上传到任何转换网站，敏感文档更安全。
+
+| 拖进来的文件 | 转成 Markdown 后保留 |
+|---|---|
+| Word（DOCX）、RTF、ODT、HTML | 标题、粗体、斜体、链接、列表、表格 |
+| PDF（包括扫描件） | 每一页的文字 |
+| PPT（PPTX） | 每页的标题和要点、表格 |
+| Excel（XLSX） | 每张工作表变成一个 Markdown 表格 |
 
 ---
 
@@ -66,8 +86,8 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 ### 第二步：第一次打开
 
 1. 打开 FileFlipper 后，**不会出现任何大窗口**。请看屏幕**右上角的菜单栏**，会多出一个 **◎（圆圈）图标**，这就是 FileFlipper。
-2. 第一次打开时会弹出一个使用说明，点 **「Allow Home Folder…」（允许访问个人文件夹）**。
-3. 在弹出的文件选择窗口里，**直接点右下角的「Grant Access」（授权）按钮**（默认选中的就是你的个人文件夹，一般是你的用户名，前面有个小房子图标 🏠）。
+2. 第一次打开时会弹出一个使用说明，点 **「允许访问个人文件夹…」**（英文系统下是 Allow Home Folder…）。
+3. 在弹出的文件选择窗口里，**直接点右下角的「授权」按钮**（英文系统下是 Grant Access）（默认选中的就是你的个人文件夹，一般是你的用户名，前面有个小房子图标 🏠）。
 
 > **为什么要授权？** 苹果规定，App Store 里的软件不能随便在你的文件夹里新建文件。授权一次个人文件夹后，FileFlipper 就能把转换好的文件保存在原文件旁边，以后再也不会问你。
 > 如果你跳过了这一步也没关系，第一次转换文件时它会再问一次。
@@ -120,31 +140,31 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 #### 按住 Option + Shift → 工具
 
-| 文件 | 按钮上的英文 | 作用 |
+| 文件 | 按钮上的名字 | 作用 |
 |---|---|---|
-| 🖼 图片 | Crop | 裁剪：弹出小窗口，拖动框选要保留的区域，可选 1:1、4:3、16:9 等比例 |
-| | Compress | 压缩，让图片变小（见下方说明） |
-| | Clean | 去除元数据（拍摄地点、相机型号等隐私信息） |
+| 🖼 图片 | 裁剪（Crop） | 裁剪：弹出小窗口，拖动框选要保留的区域，可选 1:1、4:3、16:9 等比例 |
+| | 压缩（Compress） | 压缩，让图片变小（见下方说明） |
+| | 去隐私（Clean） | 去除元数据（拍摄地点、相机型号等隐私信息） |
 | | 50% | 尺寸缩小一半 |
-| | Rotate | 顺时针旋转 90° |
-| | Flip | 左右翻转（镜像） |
-| | B&W | 变成黑白 |
-| | Cutout | 自动抠图，去掉背景，保存为透明 PNG。纯色背景（白底图标、Logo、截图、白底商品图）会被干净地去掉，不留白边；普通照片用苹果系统自带的 AI 识别主体 |
-| | Merge | 把多张图片合成一个 PDF（需选 2 张以上） |
-| 📕 PDF | Compress | 压缩 PDF |
-| | Clean | 去除作者等信息 |
-| | Rotate | 所有页面旋转 90° |
-| | Split | 拆分，每一页存成单独的 PDF |
-| | Text | 提取文字，存成 TXT。扫描件、拍照转成的 PDF 也可以：会自动用苹果自带的文字识别（OCR），支持中文和英文 |
-| | Merge | 把多个 PDF 合并成一个（需选 2 个以上） |
-| 🎬 视频 | Compress | 压缩视频 |
+| | 旋转（Rotate） | 顺时针旋转 90° |
+| | 翻转（Flip） | 左右翻转（镜像） |
+| | 黑白（B&W） | 变成黑白 |
+| | 抠图（Cutout） | 自动抠图，去掉背景，保存为透明 PNG。纯色背景（白底图标、Logo、截图、白底商品图）会被干净地去掉，不留白边；普通照片用苹果系统自带的 AI 识别主体 |
+| | 合并（Merge） | 把多张图片合成一个 PDF（需选 2 张以上） |
+| 📕 PDF | 压缩（Compress） | 压缩 PDF |
+| | 去隐私（Clean） | 去除作者等信息 |
+| | 旋转（Rotate） | 所有页面旋转 90° |
+| | 拆分（Split） | 拆分，每一页存成单独的 PDF |
+| | 文字（Text） | 提取文字，存成 TXT。扫描件、拍照转成的 PDF 也可以：会自动用苹果自带的文字识别（OCR），支持中文和英文 |
+| | 合并（Merge） | 把多个 PDF 合并成一个（需选 2 个以上） |
+| 🎬 视频 | 压缩（Compress） | 压缩视频 |
 | | 720p | 转成 720p 清晰度 |
-| | Mute | 去掉声音 |
-| | Audio | 只提取声音（M4A） |
-| | Frame | 截取一帧画面存成图片 |
-| 🎵 音频 | Compress | 压缩音频 |
-| | Mono | 转成单声道 |
-| 📄 文档 | Plain | 去掉所有格式，只留纯文字 |
+| | 静音（Mute） | 去掉声音 |
+| | 音频（Audio） | 只提取声音（M4A） |
+| | 截帧（Frame） | 截取一帧画面存成图片 |
+| 🎵 音频 | 压缩（Compress） | 压缩音频 |
+| | 单声道（Mono） | 转成单声道 |
+| 📄 文档 | 纯文本（Plain） | 去掉所有格式，只留纯文字 |
 
 #### 「压缩」具体做了什么？
 
@@ -164,18 +184,18 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 ### 菜单栏选项
 
-点击右上角的 ◎ 图标会出现菜单（菜单是英文的）：
+点击右上角的 ◎ 图标会出现菜单（系统语言是中文时显示中文，括号里是英文系统下的名字）：
 
 | 菜单项 | 意思 |
 |---|---|
-| **Enabled** | 开关。去掉勾就暂停 FileFlipper，按 Shift 拖动不会再出现按钮 |
-| **Launch at Login** | 开机自动启动（推荐勾上） |
-| **Can Save In: …** | 已授权可以保存文件的文件夹 |
-| **Allow Home Folder…** | 授权个人文件夹（一次搞定所有文件夹） |
-| **Reset Folder Access** | 清除所有授权，重新来过 |
-| **How to Use…** | 查看使用说明 |
-| **About FileFlipper** | 关于 |
-| **Quit FileFlipper** | 退出 |
+| **启用**（Enabled） | 开关。去掉勾就暂停 FileFlipper，按 Shift 拖动不会再出现按钮 |
+| **开机时启动**（Launch at Login） | 开机自动启动（推荐勾上） |
+| **可以保存到：…**（Can Save In） | 已授权可以保存文件的文件夹 |
+| **允许访问个人文件夹…**（Allow Home Folder） | 授权个人文件夹（一次搞定所有文件夹） |
+| **重置文件夹权限**（Reset Folder Access） | 清除所有授权，重新来过 |
+| **使用说明…**（How to Use） | 查看使用说明 |
+| **关于 FileFlipper**（About） | 关于 |
+| **退出 FileFlipper**（Quit） | 退出 |
 
 ---
 
@@ -183,15 +203,15 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 **❓ 按住 Shift 拖文件，按钮没有出现？**
 1. 看右上角菜单栏有没有 ◎ 图标。没有的话说明 FileFlipper 没打开，去「应用程序」里双击打开它。
-2. 点 ◎ 图标，确认 **Enabled** 前面有勾 ✓。
+2. 点 ◎ 图标，确认 **启用** 前面有勾 ✓。
 3. 一定要**先按住鼠标开始拖动**，再按 Shift（或者同时按）。只是选中文件按 Shift 是没用的。
 4. 只支持**文件**，拖文件夹不会出现按钮。
 
-**❓ 鼠标上方只显示 "No formats for this file type"？**
+**❓ 鼠标上方只显示「这类文件暂时不能转换」？**
 说明暂时不支持这种文件类型（比如 ZIP 压缩包、Keynote 文件）。
 
-**❓ 提示 "FileFlipper needs folder access to save the converted file"？**
-说明你没有授权这个文件夹。点 ◎ 图标 → **Allow Home Folder…** → 点「Grant Access」即可。
+**❓ 提示「FileFlipper 需要文件夹权限才能保存转换后的文件」？**
+说明你没有授权这个文件夹。点 ◎ 图标 → **允许访问个人文件夹…** → 点「授权」即可。
 （如果文件在 U 盘或移动硬盘上，第一次转换时它会单独请求那个位置的权限。）
 
 **❓ 打开时提示「无法验证开发者」/「已损坏」？**
@@ -201,10 +221,13 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 不会。FileFlipper 完全不联网，所有转换都用的是 Mac 系统自带的功能，在你电脑上完成。代码全部公开在这里，任何人都可以检查。隐私政策见 [PRIVACY.md](PRIVACY.md)。
 
 **❓ 怎么让它开机自动运行？**
-点 ◎ 图标 → 勾上 **Launch at Login**。
+点 ◎ 图标 → 勾上 **开机时启动**。
 
 **❓ 怎么卸载？**
-点 ◎ 图标 → **Quit FileFlipper**，然后把「应用程序」里的 FileFlipper 拖到废纸篓。
+点 ◎ 图标 → **退出 FileFlipper**，然后把「应用程序」里的 FileFlipper 拖到废纸篓。
+
+**❓ 界面是中文的吗？**
+是的。FileFlipper 会跟随 Mac 的系统语言：系统是简体中文时，菜单、按钮、提示都显示中文；其他语言显示英文。
 
 **❓ 为什么不能转 MP3？**
 Mac 系统自带的编码器不能生成 MP3。可以转成 M4A，音质更好、文件更小，几乎所有设备都能播放。
@@ -234,11 +257,27 @@ When you want to convert a file, just **drag it in Finder and hold the Shift key
 
 - 📸 HEIC photos → JPG, PNG → PDF
 - 📄 Word → PDF, PDF → images or text
-- 📊 PowerPoint and Excel → PDF; every document → Markdown
+- ⭐ **One-click Markdown for every document** (fewer tokens for AI); PowerPoint and Excel → PDF
 - 🎬 Video → GIF, pull the audio out of a video
 - ✂️ Crop images, 🗜 compress images / PDFs / videos, remove photo backgrounds, merge PDFs…
 
 **Everything happens on your own Mac. Your files are never uploaded anywhere, and no internet connection is needed.**
+
+### ⭐ One-click Markdown: feed AI with fewer tokens
+
+Drag a Word file, PDF, PowerPoint or Excel sheet, hold Shift and pick **MD**. You get a clean Markdown file in seconds, ready to paste into ChatGPT, Claude, Gemini or any other AI assistant.
+
+- **Fewer tokens**: Markdown is plain text that marks headings, lists and tables with just a few symbols (`#`, `-`, `|`). Compared with uploading a PDF or Word file, or pasting a web page, it usually takes fewer tokens, so more of your content fits in the same context window.
+- **Better answers**: the structure (heading levels, lists, tables) is kept, so the AI understands the document better.
+- **Scans too**: scanned PDFs without a text layer are read with Apple's on-device OCR (Chinese, English and more).
+- **Offline and private**: no need to upload sensitive documents to an online converter first.
+
+| Dragged file | What the Markdown keeps |
+|---|---|
+| Word (DOCX), RTF, ODT, HTML | Headings, bold, italic, links, lists, tables |
+| PDF (including scans) | The text of every page |
+| PowerPoint (PPTX) | Each slide's title, bullet points and tables |
+| Excel (XLSX) | Each sheet as a Markdown table |
 
 ---
 
@@ -411,6 +450,9 @@ Click ◎ → check **Launch at Login**.
 
 **❓ How do I uninstall it?**
 Click ◎ → **Quit FileFlipper**, then drag FileFlipper from Applications to the Trash.
+
+**❓ Which languages does it support?**
+English and Simplified Chinese. FileFlipper follows your Mac's system language.
 
 **❓ Why no MP3?**
 macOS can't create MP3 files with its built-in encoders. Use M4A instead — better quality at a smaller size, and it plays almost everywhere.
