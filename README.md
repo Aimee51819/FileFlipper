@@ -28,6 +28,7 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 - 📸 照片 HEIC 转 JPG、PNG 转 PDF
 - 📄 Word 转 PDF、PDF 转图片或文字
+- 📊 PPT、Excel 转 PDF；所有文档一键转 Markdown
 - 🎬 视频转 GIF、视频提取音频
 - ✂️ 裁剪图片、🗜 压缩图片 / PDF / 视频、抠图去背景、合并多个 PDF ……
 
@@ -108,8 +109,10 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 | 拖动的文件 | 可以转换成 |
 |---|---|
 | 🖼 图片（PNG、JPG、HEIC、WEBP、TIFF、GIF、BMP、相机 RAW 等） | PNG、JPG、HEIC、WEBP\*、TIFF、GIF、BMP、PDF |
-| 📕 PDF | PNG、JPG、TIFF、HEIC（每页一张图）、TXT、DOCX（Word）、RTF（扫描件会自动 OCR 识别文字） |
-| 📄 文档（Word DOCX/DOC、RTF、ODT、网页 HTML、TXT、Markdown） | DOCX、PDF、RTF、TXT、HTML、ODT、DOC |
+| 📕 PDF | PNG、JPG、TIFF、HEIC（每页一张图）、TXT、**MD**、DOCX（Word）、RTF（扫描件会自动 OCR 识别文字） |
+| 📄 文档（Word DOCX/DOC、RTF、ODT、网页 HTML、TXT） | DOCX、PDF、RTF、**MD（Markdown）**、TXT、HTML、ODT、DOC |
+| 📊 PPT（PPTX） | **PDF**（每页一张幻灯片）、**MD**（每页的标题和要点） |
+| 📈 Excel（XLSX） | **PDF**（每张工作表一个表格）、**MD**（Markdown 表格） |
 | 🎬 视频（MOV、MP4、M4V 等） | MP4、MOV、GIF（动图）、M4A（只要声音） |
 | 🎵 音频（M4A、MP3、WAV、AIFF、CAF 等） | M4A、WAV、AIFF、CAF |
 
@@ -212,6 +215,10 @@ Mac 系统自带的编码器不能生成 MP3。可以转成 M4A，音质更好�
 - WEBP 只有在 macOS 支持保存时才会出现。
 - 鼠标在屏幕边缘时，按钮会自动挪进屏幕内；在屏幕顶部时会出现在鼠标下方。
 - 处理很大的视频需要一点时间，屏幕下方会一直显示处理提示，请耐心等它显示 "Saved"。
+- **PPT 转 PDF**：会还原文字、图片、形状、表格和背景，但图表、SmartArt、动画和视频不会显示；电脑上没有的字体会用系统字体代替。
+- **Excel 转 PDF**：显示的是单元格里的值（公式显示上次保存时的结果），图表和图片不会显示；很宽的表格会自动缩小或分成几页。
+- 只支持新版的 .pptx / .xlsx，旧版的 .ppt / .xls 请先用 Office 另存为新格式。
+- 转 Markdown 时会保留标题、粗体、斜体、链接、列表和表格；颜色、字体、图片不会保留。
 
 有问题或建议？欢迎在 [Issues](https://github.com/Aimee51819/FileFlipper/issues) 里提出。
 
@@ -227,6 +234,7 @@ When you want to convert a file, just **drag it in Finder and hold the Shift key
 
 - 📸 HEIC photos → JPG, PNG → PDF
 - 📄 Word → PDF, PDF → images or text
+- 📊 PowerPoint and Excel → PDF; every document → Markdown
 - 🎬 Video → GIF, pull the audio out of a video
 - ✂️ Crop images, 🗜 compress images / PDFs / videos, remove photo backgrounds, merge PDFs…
 
@@ -307,8 +315,10 @@ With **several images** or **several PDFs** selected, the tools also include **M
 | Dragged file | Convert to |
 |---|---|
 | 🖼 Images (PNG, JPG, HEIC, WEBP, TIFF, GIF, BMP, camera RAW…) | PNG, JPG, HEIC, WEBP\*, TIFF, GIF, BMP, PDF |
-| 📕 PDF | PNG, JPG, TIFF, HEIC (one image per page), TXT, DOCX (Word), RTF (scanned pages are read with OCR) |
-| 📄 Documents (Word DOCX/DOC, RTF, ODT, HTML, TXT, Markdown) | DOCX, PDF, RTF, TXT, HTML, ODT, DOC |
+| 📕 PDF | PNG, JPG, TIFF, HEIC (one image per page), TXT, **MD**, DOCX (Word), RTF (scanned pages are read with OCR) |
+| 📄 Documents (Word DOCX/DOC, RTF, ODT, HTML, TXT) | DOCX, PDF, RTF, **MD (Markdown)**, TXT, HTML, ODT, DOC |
+| 📊 PowerPoint (PPTX) | **PDF** (one page per slide), **MD** (titles and bullet points) |
+| 📈 Excel (XLSX) | **PDF** (each sheet as a table), **MD** (Markdown tables) |
 | 🎬 Video (MOV, MP4, M4V…) | MP4, MOV, GIF (animated), M4A (audio only) |
 | 🎵 Audio (M4A, MP3, WAV, AIFF, CAF…) | M4A, WAV, AIFF, CAF |
 
@@ -411,6 +421,10 @@ macOS can't create MP3 files with its built-in encoders. Use M4A instead — bet
 - WEBP only appears if your macOS can save it.
 - Near a screen edge the buttons slide back on screen; near the top they open below the pointer.
 - Large videos take a while; a message stays at the bottom of the screen until "Saved" appears.
+- **PowerPoint → PDF** draws text, pictures, shapes, tables and backgrounds; charts, SmartArt, animations and videos are not shown, and fonts you don't have are replaced with the system font.
+- **Excel → PDF** shows cell values (formulas show their last saved result); charts and pictures are not shown; very wide sheets are shrunk or split across pages.
+- Only the modern .pptx / .xlsx formats are supported. Save old .ppt / .xls files in the new format first.
+- Markdown keeps headings, bold, italic, links, lists and tables; colours, fonts and pictures are dropped.
 
 Questions or ideas? Open an [issue](https://github.com/Aimee51819/FileFlipper/issues).
 
@@ -459,7 +473,8 @@ Sources/FileFlipper/
 ├── ToastController.swift    result HUD
 ├── FolderAccess.swift       sandbox folder permissions (security-scoped bookmarks)
 ├── Support.swift            output naming, errors
-└── Converters/              Image, PDF, Document, Media, BackgroundRemover, TextRecognizer (OCR)
+└── Converters/              Image, PDF, Document, Media, BackgroundRemover, TextRecognizer (OCR),
+                             Presentation (PPTX), Spreadsheet (XLSX), WordMarkdown, MarkdownWriter, ZipArchive
 ```
 
 Adding a format or tool = adding a `PickerItem` in `Catalog.swift`. Pull requests are welcome.

@@ -66,6 +66,22 @@ enum PDFConverter {
         return output
     }
 
+    /// Markdown from the page text (OCR for scanned pages), one section per page.
+    static func toMarkdown(_ url: URL) throws -> URL {
+        let document = try open(url)
+        var pages: [String] = []
+        for index in 0..<document.pageCount {
+            guard let page = document.page(at: index) else { continue }
+            pages.append(TextRecognizer.hasTextLayer(page) ? (page.string ?? "") : TextRecognizer.recognize(page))
+        }
+        guard pages.contains(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
+            throw ConversionError.message("No text found in \(url.lastPathComponent)")
+        }
+        let output = OutputNaming.next(to: url, ext: "md")
+        try MarkdownWriter.markdown(fromPlainPages: pages).write(to: output, atomically: true, encoding: .utf8)
+        return output
+    }
+
     static func toDocument(_ url: URL, target: DocumentTarget) throws -> URL {
         let document = try open(url)
         let combined = NSMutableAttributedString()

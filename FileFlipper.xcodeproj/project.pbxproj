@@ -19,18 +19,24 @@
 		46799474DC3C53F58DB73882 /* BackgroundRemover.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE997BE338178DC72990D343 /* BackgroundRemover.swift */; };
 		4B031797F348211D0D7D0E2D /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1625EA7F302C9AF202656E2 /* Palette.swift */; };
 		62525C8F3AD08626B03B5052 /* ToastController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF8649049A565D6152A6975 /* ToastController.swift */; };
+		7BA8F370F7D33DA53EE2A0CB /* MarkdownWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B70C481D772C4AEE6F49F8E /* MarkdownWriter.swift */; };
 		82FF3B23E6C597EE0E63E5FD /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A886A4B149FCD500832B98 /* ImageConverter.swift */; };
 		9C5D2680C934ADA66057A0A6 /* CropWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FA3C9D57C92BACCFC12CB7 /* CropWindow.swift */; };
 		A71EB1E7B230ECC0F7E5E573 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 74983FA65F351924CA0FDF2D /* PrivacyInfo.xcprivacy */; };
 		A89A96E4F51324E1AD400A91 /* BubbleArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D8C94C59047B474CBB5635 /* BubbleArcView.swift */; };
 		AC18A9621E43238F1F42BAC5 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C4EBAEC45B418DC6B9E3B4A /* Support.swift */; };
+		B01E48400FEE0EDF323D2316 /* PresentationConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DA5BFADCA9999C840745A0 /* PresentationConverter.swift */; };
+		B6EA86874AAAACE2AD3F87C4 /* ZipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AADA85F096B3204CF9081 /* ZipArchive.swift */; };
+		B9AEAF425CD4216722862152 /* SpreadsheetConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E382BBA894EB377623537878 /* SpreadsheetConverter.swift */; };
 		C41902F0C53517D513FA3AC1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E337A42E1ABA6C079CB0A0A /* AppDelegate.swift */; };
+		CAB6AD554D917F5EF9B6D106 /* WordMarkdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC4DFCD2F9241DD7C041F89 /* WordMarkdown.swift */; };
 		FC554A39A024A0A75823CBC3 /* FolderAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF71A1F09E8BFE1430DBEF9 /* FolderAccess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		07AC9D30DC283FD7AA831DD8 /* DocumentConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConverter.swift; sourceTree = "<group>"; };
 		08A7E99794653186D9A31AE0 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
+		1B70C481D772C4AEE6F49F8E /* MarkdownWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownWriter.swift; sourceTree = "<group>"; };
 		1EF4456F32879EA808220458 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		2CF71A1F09E8BFE1430DBEF9 /* FolderAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderAccess.swift; sourceTree = "<group>"; };
 		3AF8649049A565D6152A6975 /* ToastController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastController.swift; sourceTree = "<group>"; };
@@ -41,12 +47,16 @@
 		74983FA65F351924CA0FDF2D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		7715535D768A310272C82A06 /* FileFlipper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileFlipper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88A886A4B149FCD500832B98 /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
+		8CC4DFCD2F9241DD7C041F89 /* WordMarkdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordMarkdown.swift; sourceTree = "<group>"; };
 		8F9E4FA4CBC51E864B52D7A7 /* MediaConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaConverter.swift; sourceTree = "<group>"; };
+		971AADA85F096B3204CF9081 /* ZipArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipArchive.swift; sourceTree = "<group>"; };
+		97DA5BFADCA9999C840745A0 /* PresentationConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationConverter.swift; sourceTree = "<group>"; };
 		9A370696F3CE434BD21BBCF9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9B7C0DB90D5E63FE8FC43B71 /* PDFConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFConverter.swift; sourceTree = "<group>"; };
 		9C4EBAEC45B418DC6B9E3B4A /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
 		DB634E59C9C087799152A376 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCE2F9F0CC468FFA96988D8C /* DragMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragMonitor.swift; sourceTree = "<group>"; };
+		E382BBA894EB377623537878 /* SpreadsheetConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetConverter.swift; sourceTree = "<group>"; };
 		EE997BE338178DC72990D343 /* BackgroundRemover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRemover.swift; sourceTree = "<group>"; };
 		F1625EA7F302C9AF202656E2 /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,9 +103,14 @@
 				EE997BE338178DC72990D343 /* BackgroundRemover.swift */,
 				07AC9D30DC283FD7AA831DD8 /* DocumentConverter.swift */,
 				88A886A4B149FCD500832B98 /* ImageConverter.swift */,
+				1B70C481D772C4AEE6F49F8E /* MarkdownWriter.swift */,
 				8F9E4FA4CBC51E864B52D7A7 /* MediaConverter.swift */,
 				9B7C0DB90D5E63FE8FC43B71 /* PDFConverter.swift */,
+				97DA5BFADCA9999C840745A0 /* PresentationConverter.swift */,
+				E382BBA894EB377623537878 /* SpreadsheetConverter.swift */,
 				08A7E99794653186D9A31AE0 /* TextRecognizer.swift */,
+				8CC4DFCD2F9241DD7C041F89 /* WordMarkdown.swift */,
+				971AADA85F096B3204CF9081 /* ZipArchive.swift */,
 			);
 			path = Converters;
 			sourceTree = "<group>";
@@ -199,13 +214,18 @@
 				3491FD292CE10A47F87F40BD /* DragMonitor.swift in Sources */,
 				FC554A39A024A0A75823CBC3 /* FolderAccess.swift in Sources */,
 				82FF3B23E6C597EE0E63E5FD /* ImageConverter.swift in Sources */,
+				7BA8F370F7D33DA53EE2A0CB /* MarkdownWriter.swift in Sources */,
 				31E17C5638281008C5F295DF /* MediaConverter.swift in Sources */,
 				2BAEA1F88D6D33DF11BD14D8 /* PDFConverter.swift in Sources */,
 				4B031797F348211D0D7D0E2D /* Palette.swift in Sources */,
 				0013F07055C24338EAADC553 /* PickerController.swift in Sources */,
+				B01E48400FEE0EDF323D2316 /* PresentationConverter.swift in Sources */,
+				B9AEAF425CD4216722862152 /* SpreadsheetConverter.swift in Sources */,
 				AC18A9621E43238F1F42BAC5 /* Support.swift in Sources */,
 				4153E148153055F76CC8E10C /* TextRecognizer.swift in Sources */,
 				62525C8F3AD08626B03B5052 /* ToastController.swift in Sources */,
+				CAB6AD554D917F5EF9B6D106 /* WordMarkdown.swift in Sources */,
+				B6EA86874AAAACE2AD3F87C4 /* ZipArchive.swift in Sources */,
 				321C4DDE89F0EDB4FA475233 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -247,7 +267,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -266,7 +286,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.5.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -354,7 +374,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -367,7 +387,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.5.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

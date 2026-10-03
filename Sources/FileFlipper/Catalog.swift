@@ -15,11 +15,16 @@ struct PickerItem {
 }
 
 enum FileKind: Equatable {
-    case image, pdf, document, video, audio, other
+    case image, pdf, document, presentation, spreadsheet, video, audio, other
 
     init(url: URL) {
         let type = (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType
             ?? UTType(filenameExtension: url.pathExtension.lowercased())
+        switch url.pathExtension.lowercased() {
+        case "pptx": self = .presentation; return
+        case "xlsx": self = .spreadsheet; return
+        default: break
+        }
         guard let type else { self = .other; return }
 
         if type.conforms(to: .pdf) {
@@ -79,6 +84,9 @@ enum Catalog {
             items.append(PickerItem(title: "TXT", action: perFile(kind) { url in
                 try [PDFConverter.toText(url)]
             }))
+            items.append(PickerItem(title: "MD", detail: "Save as Markdown (OCR for scans)", action: perFile(kind) { url in
+                try [PDFConverter.toMarkdown(url)]
+            }))
             for target in DocumentConverter.targets where target.ext == "docx" || target.ext == "rtf" {
                 items.append(PickerItem(title: target.title, runsOnMain: true, action: perFile(kind) { url in
                     try [PDFConverter.toDocument(url, target: target)]
@@ -94,6 +102,26 @@ enum Catalog {
                         try [DocumentConverter.convert(url, to: target)]
                     })
                 }
+
+        case .presentation:
+            return [
+                PickerItem(title: "PDF", detail: "One page per slide", runsOnMain: true, action: perFile(kind) { url in
+                    try [PresentationConverter.toPDF(url)]
+                }),
+                PickerItem(title: "MD", detail: "Slide titles and text as Markdown", action: perFile(kind) { url in
+                    try [PresentationConverter.toMarkdown(url)]
+                }),
+            ]
+
+        case .spreadsheet:
+            return [
+                PickerItem(title: "PDF", detail: "Every sheet as a table", runsOnMain: true, action: perFile(kind) { url in
+                    try [SpreadsheetConverter.toPDF(url)]
+                }),
+                PickerItem(title: "MD", detail: "Every sheet as a Markdown table", action: perFile(kind) { url in
+                    try [SpreadsheetConverter.toMarkdown(url)]
+                }),
+            ]
 
         case .video:
             return MediaConverter.videoTargets
@@ -192,7 +220,7 @@ enum Catalog {
                           action: perFile(kind) { try [DocumentConverter.stripFormatting($0)] }),
             ]
 
-        case .other:
+        case .presentation, .spreadsheet, .other:
             items = []
         }
         return items
@@ -205,6 +233,7 @@ enum Catalog {
         switch title {
         case "PDF": return "doc.richtext"
         case "TXT": return "doc.plaintext"
+        case "MD": return "text.alignleft"
         case "DOCX", "DOC", "ODT", "RTF": return "doc.text"
         case "HTML": return "chevron.left.forwardslash.chevron.right"
         case "GIF": return "photo.stack"

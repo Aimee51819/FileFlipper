@@ -82,7 +82,7 @@ App Store Connect 里的 App 记录已经建好了：
 | 截图 | 上传 `docs/app-store-screenshots/` 里的 4 张图（尺寸 2880×1800，已经做好） |
 | 宣传文本 | 见下方「文案」 |
 | 描述 | 见下方「文案」 |
-| 关键词 | `convert,converter,file,finder,image,pdf,heic,jpg,png,webp,docx,compress,crop,background,drag,gif` |
+| 关键词 | `convert,converter,file,finder,image,pdf,heic,jpg,png,webp,docx,pptx,xlsx,markdown,compress,crop,ocr` |
 | 技术支持网址 | `https://github.com/Aimee51819/FileFlipper/issues` |
 | 营销网址（可不填） | `https://github.com/Aimee51819/FileFlipper` |
 | 版权 | `2026 你的名字`（例如 `2026 Aimee Sun`） |
@@ -120,8 +120,10 @@ Pick up a file, press Shift, and a curved row of icon buttons appears above your
 
 WHAT YOU CAN DO
 • Turn photos into JPG, PNG, HEIC, WEBP, TIFF, GIF, BMP or PDF
-• Turn PDFs into images, text, Word or RTF. Scanned pages are read with on-device OCR (Chinese, English and more)
+• Turn PDFs into images, text, Markdown, Word or RTF. Scanned pages are read with on-device OCR (Chinese, English and more)
 • Switch documents between DOCX, PDF, RTF, TXT, HTML, ODT and DOC
+• Turn PowerPoint slides and Excel sheets into PDF
+• Save any document, PDF, slide deck or spreadsheet as Markdown
 • Turn videos into MP4, MOV, animated GIF or audio
 • Save audio as M4A, WAV, AIFF or CAF
 

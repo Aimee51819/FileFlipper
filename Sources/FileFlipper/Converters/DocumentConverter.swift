@@ -16,7 +16,8 @@ enum DocumentConverter {
         DocumentTarget(title: "DOCX", ext: "docx", documentType: .officeOpenXML),
         DocumentTarget(title: "PDF", ext: "pdf", documentType: nil),
         DocumentTarget(title: "RTF", ext: "rtf", documentType: .rtf),
-        DocumentTarget(title: "TXT", ext: "txt", documentType: .plain, aliases: ["text", "md", "markdown"]),
+        DocumentTarget(title: "MD", ext: "md", documentType: .plain, aliases: ["markdown"]),
+        DocumentTarget(title: "TXT", ext: "txt", documentType: .plain, aliases: ["text"]),
         DocumentTarget(title: "HTML", ext: "html", documentType: .html, aliases: ["htm"]),
         DocumentTarget(title: "ODT", ext: "odt", documentType: .openDocument),
         DocumentTarget(title: "DOC", ext: "doc", documentType: .docFormat),
@@ -38,6 +39,13 @@ enum DocumentConverter {
     }
 
     static func convert(_ url: URL, to target: DocumentTarget) throws -> URL {
+        // Word files keep their headings and lists only when read from the XML directly.
+        if target.ext == "md", url.pathExtension.lowercased() == "docx" {
+            let markdown = try WordMarkdown.markdown(url)
+            let output = OutputNaming.next(to: url, ext: "md")
+            try markdown.write(to: output, atomically: true, encoding: .utf8)
+            return output
+        }
         let text = try read(url)
         let output = OutputNaming.next(to: url, ext: target.ext)
         try write(text, to: output, target: target)
@@ -52,6 +60,10 @@ enum DocumentConverter {
     }
 
     static func write(_ text: NSAttributedString, to output: URL, target: DocumentTarget) throws {
+        if target.ext == "md" {
+            try MarkdownWriter.markdown(from: text).write(to: output, atomically: true, encoding: .utf8)
+            return
+        }
         guard let documentType = target.documentType else {
             try printPDF(text, to: output)
             return
