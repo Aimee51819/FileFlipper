@@ -1,7 +1,14 @@
-# FileFlipper — Quick Edit for Mac
+# FileFlipper — Quick Edit for Mac & Windows
 
-**在 Finder 里直接转换文件格式，不用打开任何软件。一键转 Markdown，喂给 AI 更省 token。**
-**A free, open-source file converter that works inside Finder. One-click Markdown for AI — fewer tokens.**
+**在 Finder / 文件资源管理器里直接转换文件格式，不用打开任何软件。一键转 Markdown，喂给 AI 更省 token。**
+**A free, open-source file converter that works inside Finder and File Explorer. One-click Markdown for AI — fewer tokens.**
+
+<p align="center">
+  <b>🌐 <a href="https://aimee51819.github.io/FileFlipper/">下载 / Download: aimee51819.github.io/FileFlipper</a></b><br>
+  <a href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip">Mac</a> ·
+  <a href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe">Windows</a> ·
+  <a href="#windows-版--windows-version">Windows 版说明 / Windows notes</a>
+</p>
 
 <p align="center">
   <img src="docs/picker-convert.png" width="360" alt="Format bubbles">
@@ -472,7 +479,81 @@ Questions or ideas? Open an [issue](https://github.com/Aimee51819/FileFlipper/is
 
 ---
 
+## Windows 版 / Windows version
+
+### 中文
+
+FileFlipper 现在也有 Windows 版（Windows 10 / 11，64 位），用法和 Mac 版几乎一样：
+
+1. 下载 **[FileFlipper-Windows-Setup.exe](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe)**，双击安装（不需要管理员权限）。不想安装的话，也可以下载 **[免安装版 FileFlipper-Windows.zip](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip)**，解压后双击 `FileFlipper.exe`。
+2. 如果出现蓝色的「Windows 已保护你的电脑」，点「**更多信息**」→「**仍要运行**」。（下载版没有付费的代码签名证书，第一次会这样提示。）
+3. 装好后，FileFlipper 的图标在屏幕**右下角的通知区域**（可能藏在 **^** 里）。点它可以打开菜单：启用、开机时启动、显示在「发送到」菜单里、使用说明、退出。
+
+| | Mac | Windows |
+|---|---|---|
+| 转换格式 | 拖动时按住 **Shift** | 拖动时按住 **Shift** |
+| 工具 | **Option + Shift** | **Ctrl + Shift** |
+| 不想拖动 | — | 右键文件 → **发送到 → FileFlipper**，然后点按钮（Windows 11 先点「显示更多选项」） |
+| 图标位置 | 右上角菜单栏 | 右下角通知区域 |
+
+和 Mac 版的区别：
+
+- 视频可以转 **MP4、GIF、M4A、MP3**；音频可以转 **MP3、M4A、WAV、FLAC**（Windows 自带编码器，可以生成 MP3；不能生成 MOV、AIFF、CAF）。
+- 文档可以转 **DOCX、PDF、RTF、MD、TXT、HTML、ODT**，也可以把 **Markdown（.md）** 文件转成 Word / PDF。暂不支持老的 **.doc** 格式。
+- **抠图**只支持纯色背景的图片（Logo、图标、截图、白底商品图），Windows 没有像苹果那样可以给普通照片抠主体的系统功能。
+- **HEIC** 照片需要在 Microsoft Store 安装免费的「HEIF 图像扩展」和「HEVC 视频扩展」（很多电脑已自带）；**WEBP** 和**相机 RAW** 需要对应的扩展。转成 WEBP 暂不支持。
+- **扫描件 OCR** 用的是 Windows 自带的文字识别，会识别你在「设置 → 时间和语言 → 语言」里装的语言（中文系统默认就有中文）。
+- 重名文件会编号为 `照片 (2).jpg`，和文件资源管理器的习惯一致。
+- Windows 上 Shift 拖动本来是「移动文件」：只要继续拖出按钮范围，按钮就会消失，照常移动文件。
+
+### English
+
+FileFlipper now runs on Windows 10 and 11 (64-bit) too, and works almost the same way:
+
+1. Download **[FileFlipper-Windows-Setup.exe](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe)** and double-click it (no admin rights needed), or get the **[portable FileFlipper-Windows.zip](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip)** and run `FileFlipper.exe`.
+2. If a blue “Windows protected your PC” box appears, click **More info → Run anyway** (the download isn't signed with a paid code-signing certificate).
+3. The FileFlipper icon lives in the **notification area** at the bottom-right of the screen (maybe under **^**). Click it for the menu.
+
+Drag with **Shift** to convert, **Ctrl + Shift** for tools. Prefer clicking? Right-click files → **Send to → FileFlipper** (on Windows 11, “Show more options” first).
+
+Differences from the Mac app: video converts to MP4, GIF, M4A and MP3; audio to MP3, M4A, WAV and FLAC; documents to DOCX, PDF, RTF, MD, TXT, HTML and ODT (Markdown files can be converted too; legacy .doc isn't supported). **Cutout** only handles plain backgrounds — Windows has no built-in subject detection for photos. HEIC needs the free HEIF and HEVC extensions from the Microsoft Store; WEBP and camera RAW need their extensions; saving WEBP isn't supported. OCR uses Windows' built-in text recognition for the languages installed in Settings. Name clashes are numbered `Photo (2).jpg`, like File Explorer does.
+
+---
+
 ## For developers / 开发者
+
+### Windows
+
+**Requirements / 需要：** Windows 10/11, [.NET 8 SDK](https://dotnet.microsoft.com/download). The installer also needs [Inno Setup 6](https://jrsoftware.org/isdl.php).
+
+```powershell
+git clone https://github.com/Aimee51819/FileFlipper.git
+cd FileFlipper
+.\windows\build.ps1             # → build\windows\FileFlipper.exe (one self-contained file)
+.\windows\build.ps1 -Package    # also FileFlipper-Windows.zip and FileFlipper-Windows-Setup.exe
+```
+
+The Windows app is C# / WPF in `windows/FileFlipper`, mirroring the Swift sources file by file:
+
+```
+windows/FileFlipper/
+├── Program.cs               entry point, single instance, files from "Send to"
+├── TrayApp.cs               notification-area icon and menu, running actions
+├── DragMonitor.cs           polls mouse + Shift / Ctrl+Shift (no hooks, no admin)
+├── PickerWindow.cs          bubble arc; an OLE drop target that appears under the pointer mid-drag
+├── CropWindow.cs, ToastWindow.cs, InfoWindow.cs
+├── Catalog.cs               which formats/tools appear for which file type
+├── Settings.cs              preferences, Start with Windows, "Send to" shortcut
+└── Converters/              Image (WIC), PDF (Windows.Data.Pdf + PdfPig + PDFsharp), OCR (Windows.Media.Ocr),
+                             Media (Media Foundation), Document readers/writers, Presentation, Spreadsheet
+windows/installer/FileFlipper.iss   Inno Setup script (per-user install)
+```
+
+How the drag works on Windows: there is no system-wide drag pasteboard like on macOS, so a 30 Hz timer watches the mouse button and Shift. When a Shift-drag starts, an almost-transparent window is placed under the pointer; when the drag enters it, Windows hands over the dragged files (OLE drag and drop), and the bubbles fade in. Leaving the window hides it, so normal drags keep working.
+
+**Releases:** push a tag such as `v1.6.0` and `.github/workflows/release.yml` builds the Mac zip, the Windows installer and the portable zip and attaches them to a GitHub release. The website (`docs/index.html`, GitHub Pages) always links to the latest release.
+
+### Mac
 
 **Requirements / 需要：** macOS 14+, Xcode (free on the Mac App Store).
 

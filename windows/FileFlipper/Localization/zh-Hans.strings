@@ -1,0 +1,122 @@
+/* FileFlipper for Windows — Simplified Chinese. Same format as the Mac app's Localizable.strings. */
+
+/* Picker */
+"Save as Markdown (OCR for scans)" = "存为 Markdown（扫描件自动 OCR）";
+"Markdown, ready for AI" = "Markdown，直接喂给 AI";
+"One page per slide" = "每张幻灯片一页";
+"Slide titles and text as Markdown" = "幻灯片标题和文字转 Markdown";
+"Every sheet as a table" = "每张工作表一个表格";
+"Every sheet as a Markdown table" = "每张工作表转成 Markdown 表格";
+"Save as %@" = "存为 %@";
+"No tools for this file type" = "这类文件暂时没有工具";
+"No formats for this file type" = "这类文件暂时不能转换";
+"TOOLS" = "工具";
+"CONVERT" = "转换";
+"%@ files" = "%@ 个文件";
+"Click a bubble · Ctrl for tools · Esc to close" = "点击按钮 · 按 Ctrl 切换工具 · Esc 关闭";
+
+/* Tools */
+"Crop" = "裁剪";
+"Crop to a selected area" = "裁剪出选中的区域";
+"Compress" = "压缩";
+"Make the image smaller" = "把图片变小";
+"Clean" = "去隐私";
+"Remove GPS and camera info" = "去除定位和相机信息";
+"Half the width and height" = "长宽各缩小一半";
+"Rotate" = "旋转";
+"Rotate 90° clockwise" = "顺时针旋转 90°";
+"Flip" = "翻转";
+"Mirror left to right" = "左右镜像翻转";
+"B&W" = "黑白";
+"Black and white" = "变成黑白";
+"Cutout" = "抠图";
+"Remove a plain background" = "去掉纯色背景";
+"Merge" = "合并";
+"Combine into one PDF" = "合并成一个 PDF";
+"Make the PDF smaller" = "把 PDF 变小";
+"Remove author info" = "去除作者信息";
+"Rotate every page 90°" = "所有页面旋转 90°";
+"Split" = "拆分";
+"One PDF per page" = "每页存成一个 PDF";
+"Text" = "文字";
+"Extract text, OCR for scans" = "提取文字，扫描件自动 OCR";
+"Combine the PDFs into one" = "把多个 PDF 合并成一个";
+"Make the video smaller" = "把视频变小";
+"Convert to 720p" = "转成 720p";
+"Mute" = "静音";
+"Remove the sound" = "去掉声音";
+"Audio" = "音频";
+"Keep only the sound (M4A)" = "只保留声音（M4A）";
+"Frame" = "截帧";
+"Save one frame as an image" = "截取一帧存成图片";
+"Make the file smaller" = "把文件变小";
+"Mono" = "单声道";
+"Convert to mono" = "转成单声道";
+"Plain" = "纯文本";
+"Remove all formatting" = "去掉所有格式";
+
+/* Crop window */
+"Free" = "自由";
+"Cancel" = "取消";
+"Crop “%@”" = "裁剪「%@」";
+
+/* Results */
+"Cancelled" = "已取消";
+"%@: %@…" = "%@：%@…";
+"Saved %@" = "已保存 %@";
+"Saved %@ files" = "已保存 %@ 个文件";
+"%@: nothing to do" = "%@：没有可处理的内容";
+"%@ failed: %@" = "%@ 失败：%@";
+"Send files, not folders, to FileFlipper" = "请发送文件（不是文件夹）给 FileFlipper";
+"FileFlipper is running — look for its icon in the notification area" = "FileFlipper 已在运行 —— 图标在屏幕右下角的通知区域";
+"FileFlipper is already running — look for its icon in the notification area" = "FileFlipper 已经在运行了 —— 图标在屏幕右下角的通知区域";
+
+/* Errors */
+"Couldn't read %@" = "无法读取 %@";
+"Couldn't write %@" = "无法保存 %@";
+"%@ isn't supported on this PC" = "这台电脑不支持 %@";
+"%@ is already as small as it gets" = "%@ 已经足够小了";
+"%@ is already mono" = "%@ 已经是单声道了";
+"%@ has no audio" = "%@ 没有声音";
+"%@ has no video" = "%@ 没有画面";
+"Couldn't read frames from %@" = "无法读取 %@ 的画面";
+"Export failed" = "导出失败";
+"Windows can't decode %@ — the codec for it isn't installed" = "Windows 无法解码 %@ —— 缺少对应的解码器";
+"Not a valid Office file" = "不是有效的 Office 文件";
+"%@ has no data" = "%@ 里没有数据";
+"%@ is password protected" = "%@ 有密码保护";
+"%@ has no pages" = "%@ 没有页面";
+"No text found in %@" = "在 %@ 里没有找到文字";
+"Nothing to put in the PDF" = "没有可以放进 PDF 的内容";
+"%@ only has one page" = "%@ 只有一页";
+"%@ has no slides" = "%@ 里没有幻灯片";
+"Cutout works on pictures with a plain background, like logos, icons and product shots (%@)" = "抠图适用于纯色背景的图片，比如 Logo、图标、白底商品图（%@）";
+"install “HEIF Image Extensions” and “HEVC Video Extensions” from the Microsoft Store" = "请在 Microsoft Store 安装「HEIF 图像扩展」和「HEVC 视频扩展」";
+"install “Webp Image Extensions” from the Microsoft Store" = "请在 Microsoft Store 安装「Webp 图像扩展」";
+"install “AV1 Video Extension” from the Microsoft Store" = "请在 Microsoft Store 安装「AV1 视频扩展」";
+"install “Raw Image Extension” from the Microsoft Store" = "请在 Microsoft Store 安装「Raw 图像扩展」";
+"add a language with “Optical character recognition” in Windows Settings to read scans" = "要识别扫描件，请在 Windows 设置 → 语言里安装带「光学字符识别」的语言";
+"columns" = "列";
+"Slide" = "幻灯片";
+
+/* Notification-area menu */
+"Enabled" = "启用";
+"Start with Windows" = "开机时启动";
+"Start with Windows: %@" = "开机时启动：%@";
+"Show in “Send to” Menu" = "显示在右键「发送到」菜单里";
+"How to Use…" = "使用说明…";
+"About FileFlipper" = "关于 FileFlipper";
+"Quit FileFlipper" = "退出 FileFlipper";
+"OK" = "好";
+"Version %@" = "版本 %@";
+"Convert files right in File Explorer.\nOpen source under the MIT License." = "在文件资源管理器里直接转换文件。\n基于 MIT 许可证开源。";
+
+/* Guide */
+"How to use FileFlipper" = "FileFlipper 使用说明";
+"Convert: start dragging a file in File Explorer, then hold Shift. Round buttons appear in an arc above the pointer. Drop the file on a format and the converted copy is saved next to the original." = "转换：在文件资源管理器里拖动文件，同时按住 Shift，鼠标上方会弹出一排圆形按钮。拖到想要的格式上松开，转换好的文件会保存在原文件旁边。";
+"Tools: hold Ctrl + Shift while dragging to see tools for that file type (crop, compress, cut out, rotate, merge, split…)." = "工具：拖动时按住 Ctrl + Shift，会显示这类文件能用的工具（裁剪、压缩、抠图、旋转、合并、拆分……）。";
+"Markdown: pick MD to turn Word, PDF, PowerPoint or Excel into Markdown, ready for AI." = "Markdown：选 MD，就能把 Word、PDF、PPT、Excel 转成 Markdown，直接喂给 AI。";
+"Changed your mind? Let go below the arc, or drag past it, and nothing happens." = "不想转了？在按钮下方松开鼠标，或者继续拖出按钮范围就行。";
+"Prefer clicking? Right-click files → Send to → FileFlipper. (On Windows 11, choose “Show more options” first.)" = "更喜欢点鼠标？右键文件 → 发送到 → FileFlipper。（Windows 11 需要先点「显示更多选项」。）";
+"Everything happens locally on your PC. FileFlipper lives in the notification area at the bottom-right of the screen." = "所有处理都在你的电脑上完成。FileFlipper 待在屏幕右下角的通知区域（托盘）里。";
+"Got It" = "知道了";

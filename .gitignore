@@ -4,3 +4,9 @@ build/
 xcuserdata/
 DerivedData/
 .DS_Store
+
+# Windows
+bin/
+obj/
+*.user
+.vs/

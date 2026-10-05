@@ -1,0 +1,70 @@
+# Push a tag like v1.6.0 to build the Mac and Windows apps and publish them as a GitHub release.
+# The website's download buttons point at the latest release:
+#   https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip                    (Mac)
+#   https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe      (Windows)
+#   https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip            (Windows, portable)
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mac:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (sandboxed, ad-hoc signed)
+        run: ./scripts/build-app.sh
+      - name: Package
+        run: cd build && ditto -c -k --keepParent FileFlipper.app FileFlipper.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac
+          path: build/FileFlipper.zip
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
+            choco install innosetup --yes --no-progress
+          }
+      - name: Build and package
+        shell: pwsh
+        run: |
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.TrimStart('v') } else { '' }
+          ./windows/build.ps1 -Package -Version $version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            build/windows/FileFlipper-Windows-Setup.exe
+            build/windows/FileFlipper-Windows.zip
+
+  release:
+    needs: [mac, windows]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/FileFlipper.zip
+            dist/FileFlipper-Windows-Setup.exe
+            dist/FileFlipper-Windows.zip
+          generate_release_notes: true

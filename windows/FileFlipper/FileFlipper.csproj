@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- The Windows SDK version gives access to Windows.Data.Pdf, Windows.Media.Ocr and Windows.Media.Transcoding. -->
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>FileFlipper</RootNamespace>
+    <AssemblyName>FileFlipper</AssemblyName>
+    <ApplicationIcon>Assets\FileFlipper.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>FileFlipper.Program</StartupObject>
+
+    <Version>1.6.0</Version>
+    <Product>FileFlipper</Product>
+    <Company>Aimee Sun</Company>
+    <Copyright>Copyright © 2026 Aimee Sun. MIT License.</Copyright>
+    <Description>Convert files right in File Explorer.</Description>
+
+    <!-- WFAC010: the DPI setting lives in app.manifest on purpose; this is a WPF app, not WinForms. -->
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PDFsharp-WPF" Version="6.2.4" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\FileFlipper.ico" />
+    <EmbeddedResource Include="Localization\zh-Hans.strings" LogicalName="zh-Hans.strings" />
+  </ItemGroup>
+
+</Project>

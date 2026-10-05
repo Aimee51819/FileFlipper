@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FileFlipper — 拖一下就转好的文件转换器 · Convert files with a drag</title>
+<meta name="description" content="FileFlipper：免费开源的文件转换小工具，支持 Mac 和 Windows。拖动文件时按住 Shift，就能转换格式、一键转 Markdown 喂给 AI。A free, open-source file converter for Mac and Windows.">
+<meta property="og:title" content="FileFlipper — Convert files with a drag">
+<meta property="og:description" content="Free, open-source file converter for Mac and Windows. Drag a file, hold Shift, drop it on a format.">
+<meta property="og:image" content="https://aimee51819.github.io/FileFlipper/social-preview.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+  :root {
+    --bg: #fffaf5;
+    --bg-2: #fff1e4;
+    --card: #ffffff;
+    --ink: #40261a;
+    --ink-2: #7a5a49;
+    --ink-3: #a3857322;
+    --line: #f0d7c2;
+    --orange: #fa661f;
+    --orange-dark: #d9500e;
+    --peach: #ffe0c2;
+    --shadow: 0 10px 30px rgba(120, 60, 20, .10), 0 2px 6px rgba(120, 60, 20, .06);
+    --radius: 20px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1d1714;
+      --bg-2: #2a201b;
+      --card: #2b221d;
+      --ink: #fbeee3;
+      --ink-2: #cdb4a4;
+      --line: #4a3a31;
+      --peach: #4a3426;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  html[data-lang="zh"] [lang="en"], html[data-lang="en"] [lang="zh"] { display: none !important; }
+  a { color: var(--orange-dark); }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* Header */
+  header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar { display: flex; align-items: center; gap: 12px; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; }
+  .brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .bar nav { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 14px; }
+  .bar nav a { color: var(--ink-2); text-decoration: none; }
+  .bar nav a:hover { color: var(--orange-dark); }
+  .lang { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  @media (max-width: 640px) { .bar nav .hide-sm { display: none; } }
+
+  /* Hero */
+  .hero { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); padding: 64px 0 56px; text-align: center; }
+  .hero .icon { width: 112px; height: 112px; margin: 0 auto 20px; filter: drop-shadow(0 12px 24px rgba(250, 102, 31, .25)); }
+  h1 { font-size: clamp(32px, 6vw, 54px); line-height: 1.15; margin: 0 0 14px; letter-spacing: -0.02em; }
+  .lede { font-size: clamp(16px, 2.2vw, 20px); color: var(--ink-2); max-width: 720px; margin: 0 auto 36px; }
+  kbd { font: 600 .85em "Segoe UI", -apple-system, sans-serif; background: var(--card); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 1px 7px; color: var(--ink); }
+
+  .downloads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 760px; margin: 0 auto; text-align: left; }
+  @media (max-width: 680px) { .downloads { grid-template-columns: 1fr; } }
+  .dl { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); position: relative; display: flex; flex-direction: column; gap: 14px; }
+  .dl.recommended { border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 20%, transparent), var(--shadow); }
+  .badge { position: absolute; top: -11px; right: 18px; background: var(--orange); color: #fff; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; display: none; }
+  .dl.recommended .badge { display: block; }
+  .dl-head { display: flex; align-items: center; gap: 12px; }
+  .dl-head svg { width: 34px; height: 34px; flex: none; color: var(--ink); }
+  .dl-head h3 { margin: 0; font-size: 20px; }
+  .dl-head p { margin: 0; color: var(--ink-2); font-size: 13px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--orange); color: #fff; text-decoration: none; font-weight: 700; font-size: 16px; padding: 13px 18px; border-radius: 14px; transition: background .15s, transform .15s; }
+  .btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn svg { width: 18px; height: 18px; }
+  .dl .more { font-size: 13px; color: var(--ink-2); margin: 0; }
+  .version { margin-top: 18px; font-size: 13px; color: var(--ink-2); }
+
+  /* Sections */
+  section { padding: 72px 0; }
+  section.alt { background: var(--bg-2); }
+  h2 { font-size: clamp(26px, 4vw, 36px); line-height: 1.2; margin: 0 0 10px; text-align: center; letter-spacing: -0.01em; }
+  .sub { text-align: center; color: var(--ink-2); max-width: 680px; margin: 0 auto 40px; }
+
+  .shots { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+  .shots img { border-radius: 16px; border: 1px solid var(--line); box-shadow: var(--shadow); width: 100%; height: auto; }
+  .shots .side { display: grid; gap: 18px; }
+  @media (max-width: 760px) { .shots { grid-template-columns: 1fr; } }
+
+  .features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 860px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .features { grid-template-columns: 1fr; } }
+  .feature { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .feature .emoji { font-size: 26px; }
+  .feature h3 { margin: 6px 0 6px; font-size: 17px; }
+  .feature p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+  .feature.star { border-color: var(--orange); background: linear-gradient(180deg, color-mix(in srgb, var(--peach) 55%, var(--card)), var(--card)); }
+
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: step; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 20px 20px; position: relative; }
+  .step::before { counter-increment: step; content: counter(step); position: absolute; top: -14px; left: 20px; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: 14px; }
+  .step h3 { margin: 4px 0 6px; font-size: 17px; }
+  .step p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+
+  .keys { margin: 28px auto 0; max-width: 760px; border-collapse: collapse; width: 100%; background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--line); font-size: 15px; }
+  .keys th, .keys td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); }
+  .keys tr:last-child td { border-bottom: 0; }
+  .keys th { background: color-mix(in srgb, var(--peach) 60%, var(--card)); font-size: 14px; }
+
+  .install { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  @media (max-width: 760px) { .install { grid-template-columns: 1fr; } }
+  .install .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; }
+  .install h3 { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+  .install h3 svg { width: 22px; height: 22px; }
+  .install ol { margin: 0; padding-left: 20px; color: var(--ink-2); }
+  .install li { margin: 6px 0; }
+  .install .note { font-size: 13.5px; color: var(--ink-2); background: var(--bg-2); border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+
+  .faq { max-width: 760px; margin: 0 auto; }
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--ink-2); margin: 10px 0 0; }
+
+  footer { padding: 36px 0 48px; text-align: center; color: var(--ink-2); font-size: 14px; border-top: 1px solid var(--line); }
+  footer a { color: var(--ink-2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top"><img src="icon.png" alt="">FileFlipper</a>
+    <nav>
+      <a class="hide-sm" href="#features"><span lang="zh">功能</span><span lang="en">Features</span></a>
+      <a class="hide-sm" href="#how"><span lang="zh">怎么用</span><span lang="en">How it works</span></a>
+      <a class="hide-sm" href="#install"><span lang="zh">安装帮助</span><span lang="en">Install help</span></a>
+      <a href="https://github.com/Aimee51819/FileFlipper">GitHub</a>
+      <button class="lang" id="lang" type="button" aria-label="Switch language"><span lang="zh">English</span><span lang="en">中文</span></button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <img class="icon" src="icon.png" alt="FileFlipper">
+      <h1>
+        <span lang="zh">拖一下，文件就转好了</span>
+        <span lang="en">Convert files with a drag</span>
+      </h1>
+      <p class="lede">
+        <span lang="zh">拖动文件时按住 <kbd>Shift</kbd>，鼠标旁就会弹出一排格式按钮，往想要的格式一拖就好。免费、开源、不联网，Mac 和 Windows 都能用。</span>
+        <span lang="en">Hold <kbd>Shift</kbd> while dragging a file and a ring of format buttons pops up next to the pointer. Drop it on one and you're done. Free, open source, fully offline — for Mac and Windows.</span>
+      </p>
+
+      <div class="downloads">
+        <div class="dl" id="dl-mac">
+          <span class="badge"><span lang="zh">适合你的电脑</span><span lang="en">For your computer</span></span>
+          <div class="dl-head">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.65-.39 6.58 1.1 8.73.73 1.05 1.6 2.23 2.73 2.19 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.3-3.49zM14.19 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg>
+            <div>
+              <h3>macOS</h3>
+              <p><span lang="zh">macOS 14 或更新 · Apple 芯片和 Intel</span><span lang="en">macOS 14 or later · Apple silicon &amp; Intel</span></p>
+            </div>
+          </div>
+          <a class="btn" id="btn-mac" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>
+            <span lang="zh">下载 Mac 版</span><span lang="en">Download for Mac</span>
+          </a>
+          <p class="more"><span lang="zh">下载后解压，把 FileFlipper 拖进「应用程序」。第一次打开见 <a href="#install">安装帮助</a>。</span><span lang="en">Unzip it and drag FileFlipper into Applications. First launch: see <a href="#install">install help</a>.</span></p>
+        </div>
+
+        <div class="dl" id="dl-win">
+          <span class="badge"><span lang="zh">适合你的电脑</span><span lang="en">For your computer</span></span>
+          <div class="dl-head">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.1H3zm0 13.8 7.4 1.1v-7H3zm8.3 1.2L21 21.5V13h-9.7zM11.3 3.9V11H21V2.5z"/></svg>
+            <div>
+              <h3>Windows</h3>
+              <p><span lang="zh">Windows 10 / 11 · 64 位</span><span lang="en">Windows 10 / 11 · 64-bit</span></p>
+            </div>
+          </div>
+          <a class="btn" id="btn-win" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>
+            <span lang="zh">下载 Windows 版</span><span lang="en">Download for Windows</span>
+          </a>
+          <p class="more" id="win-more"><span lang="zh">双击安装，不需要管理员权限。也可以下载<a id="win-zip" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip">免安装版 (.zip)</a>。</span><span lang="en">Double-click to install — no admin rights needed. Or get the <a id="win-zip-en" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip">portable .zip</a>.</span></p>
+        </div>
+      </div>
+      <p class="version" id="version"><span lang="zh">免费 · MIT 开源 · 文件不会上传到任何地方</span><span lang="en">Free · MIT open source · Your files never leave your computer</span></p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2><span lang="zh">按住 Shift，往格式的方向一拖</span><span lang="en">Hold Shift, flick toward a format</span></h2>
+      <p class="sub"><span lang="zh">不用打开任何软件，不用找菜单。在 Mac 的访达、Windows 的文件资源管理器里直接完成，转好的新文件就在原文件旁边。</span><span lang="en">No app to open, no menus to dig through. It works right in Finder on Mac and File Explorer on Windows, and the converted copy lands next to the original.</span></p>
+      <div class="shots">
+        <div>
+          <img lang="zh" src="web/zh-1-convert.jpg" width="1440" height="900" alt="拖动文件时弹出的格式按钮">
+          <img lang="en" src="web/en-1-convert.jpg" width="1440" height="900" alt="Format bubbles that appear while dragging">
+        </div>
+        <div class="side">
+          <img lang="zh" src="web/zh-5-markdown.jpg" width="1440" height="900" alt="一键转 Markdown" loading="lazy">
+          <img lang="en" src="web/en-5-markdown.jpg" width="1440" height="900" alt="One-click Markdown" loading="lazy">
+          <img lang="zh" src="web/zh-2-tools.jpg" width="1440" height="900" alt="工具按钮" loading="lazy">
+          <img lang="en" src="web/en-2-tools.jpg" width="1440" height="900" alt="Tool bubbles" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="features">
+    <div class="wrap">
+      <h2><span lang="zh">能做什么</span><span lang="en">What it does</span></h2>
+      <p class="sub"><span lang="zh">常见的图片、文档、PDF、PPT、Excel、视频、音频都能转。</span><span lang="en">Images, documents, PDFs, slides, spreadsheets, video and audio.</span></p>
+      <div class="features">
+        <div class="feature star">
+          <div class="emoji">⭐</div>
+          <h3><span lang="zh">一键转 Markdown，喂给 AI</span><span lang="en">One-click Markdown for AI</span></h3>
+          <p><span lang="zh">Word、PDF、PPT、Excel 转成干净的 Markdown，保留标题、列表和表格，粘贴给 ChatGPT、Claude、DeepSeek、Kimi 更省 token。</span><span lang="en">Word, PDF, PowerPoint and Excel become clean Markdown with headings, lists and tables — fewer tokens for ChatGPT, Claude or Gemini.</span></p>
+        </div>
+        <div class="feature">
+          <div class="emoji">📸</div>
+          <h3><span lang="zh">图片格式</span><span lang="en">Image formats</span></h3>
+          <p><span lang="zh">HEIC 转 JPG，PNG、JPG、TIFF、GIF、BMP 互转，图片转 PDF。</span><span lang="en">HEIC to JPG, convert between PNG, JPG, TIFF, GIF and BMP, images to PDF.</span></p>
+        </div>
+        <div class="feature">
+          <div class="emoji">📕</div>
+          <h3><span lang="zh">PDF</span><span lang="en">PDF</span></h3>
+          <p><span lang="zh">PDF 转图片、文字、Word；压缩、旋转、拆分、合并；扫描件自动 OCR 识别中英文。</span><span lang="en">PDF to images, text or Word; compress, rotate, split, merge; scans are read with built-in OCR.</span></p>
+        </div>
+        <div class="feature">
+          <div class="emoji">📄</div>
+          <h3><span lang="zh">文档和 Office</span><span lang="en">Documents &amp; Office</span></h3>
+          <p><span lang="zh">Word、RTF、ODT、网页互转，PPT 和 Excel 转 PDF。</span><span lang="en">Word, RTF, ODT and HTML back and forth; PowerPoint and Excel to PDF.</span></p>
+        </div>
+        <div class="feature">
+          <div class="emoji">🎬</div>
+          <h3><span lang="zh">视频和音频</span><span lang="en">Video &amp; audio</span></h3>
+          <p><span lang="zh">视频转 GIF、提取声音、压缩、转 720p、静音、截帧；音频格式互转。</span><span lang="en">Video to GIF, extract audio, compress, 720p, mute, grab a frame; convert audio.</span></p>
+        </div>
+        <div class="feature">
+          <div class="emoji">✂️</div>
+          <h3><span lang="zh">图片小工具</span><span lang="en">Image tools</span></h3>
+          <p><span lang="zh">裁剪、压缩、去除定位信息、缩小一半、旋转、翻转、黑白、抠图。</span><span lang="en">Crop, compress, strip location data, half size, rotate, flip, black &amp; white, cut out.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2><span lang="zh">三步上手</span><span lang="en">Three steps</span></h2>
+      <p class="sub"><span lang="zh">装好后它安静地待在菜单栏（Mac）或任务栏右下角的通知区域（Windows）。</span><span lang="en">Once installed it sits quietly in the menu bar (Mac) or the notification area (Windows).</span></p>
+      <div class="steps">
+        <div class="step">
+          <h3><span lang="zh">按住文件开始拖</span><span lang="en">Start dragging a file</span></h3>
+          <p><span lang="zh">在访达或文件资源管理器里，按住鼠标拖动文件（不要松开）。</span><span lang="en">In Finder or File Explorer, click and hold a file and start dragging.</span></p>
+        </div>
+        <div class="step">
+          <h3><span lang="zh">按住 Shift</span><span lang="en">Hold Shift</span></h3>
+          <p><span lang="zh">鼠标旁弹出一排圆形按钮，每个是一种格式。按钮出现后就可以松开 Shift。</span><span lang="en">Round buttons appear around the pointer, one per format. You can let go of Shift once they're up.</span></p>
+        </div>
+        <div class="step">
+          <h3><span lang="zh">往格式方向松手</span><span lang="en">Drop on a format</span></h3>
+          <p><span lang="zh">往想要的按钮方向一拖再松开，新文件就保存在原文件旁边，不会覆盖任何文件。</span><span lang="en">Move toward the one you want and let go. The new file is saved next to the original — nothing is overwritten.</span></p>
+        </div>
+      </div>
+      <table class="keys">
+        <tr><th></th><th>Mac</th><th>Windows</th></tr>
+        <tr><td><span lang="zh">转换格式</span><span lang="en">Convert</span></td><td><kbd>Shift</kbd></td><td><kbd>Shift</kbd></td></tr>
+        <tr><td><span lang="zh">工具（裁剪、压缩、抠图…）</span><span lang="en">Tools (crop, compress, cut out…)</span></td><td><kbd>Option</kbd> + <kbd>Shift</kbd></td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd></td></tr>
+        <tr><td><span lang="zh">不想拖？用右键</span><span lang="en">Prefer right-click?</span></td><td>—</td><td><span lang="zh">右键 → 发送到 → FileFlipper</span><span lang="en">Right-click → Send to → FileFlipper</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="alt" id="install">
+    <div class="wrap">
+      <h2><span lang="zh">第一次打开</span><span lang="en">First launch</span></h2>
+      <p class="sub"><span lang="zh">下载版没有付费的开发者签名，系统第一次会提示一下，按下面做一次就好。</span><span lang="en">The downloads aren't signed with a paid developer certificate, so your computer asks once. Here's what to do.</span></p>
+      <div class="install">
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.65-.39 6.58 1.1 8.73.73 1.05 1.6 2.23 2.73 2.19 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.3-3.49zM14.19 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg>macOS</h3>
+          <ol lang="zh">
+            <li>双击 <b>FileFlipper.zip</b> 解压，把 FileFlipper 拖进「应用程序」。</li>
+            <li>双击打开，提示「无法验证开发者」时点「完成」（不要移到废纸篓）。</li>
+            <li>打开「系统设置 → 隐私与安全性」，往下滚动，点「仍要打开」。</li>
+            <li>再次打开 FileFlipper，点「打开」。之后屏幕右上角会出现 ◎ 图标。</li>
+          </ol>
+          <ol lang="en">
+            <li>Double-click <b>FileFlipper.zip</b> and drag FileFlipper into Applications.</li>
+            <li>Open it. When macOS says it can't verify the developer, click Done (not Move to Trash).</li>
+            <li>Go to System Settings → Privacy &amp; Security, scroll down and click Open Anyway.</li>
+            <li>Open FileFlipper again and click Open. Look for the ◎ icon in the menu bar.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.1 10.4 4v7.1H3zm0 13.8 7.4 1.1v-7H3zm8.3 1.2L21 21.5V13h-9.7zM11.3 3.9V11H21V2.5z"/></svg>Windows</h3>
+          <ol lang="zh">
+            <li>双击 <b>FileFlipper-Windows-Setup.exe</b>。</li>
+            <li>如果出现蓝色的「Windows 已保护你的电脑」，点「<b>更多信息</b>」→「<b>仍要运行</b>」。</li>
+            <li>按提示安装（勾选「开机时启动」更方便）。</li>
+            <li>FileFlipper 的图标出现在屏幕右下角的通知区域（可能在 <b>^</b> 里），就可以开始用了。</li>
+          </ol>
+          <ol lang="en">
+            <li>Double-click <b>FileFlipper-Windows-Setup.exe</b>.</li>
+            <li>If a blue “Windows protected your PC” box appears, click <b>More info</b> → <b>Run anyway</b>.</li>
+            <li>Follow the steps (keep “Start when I sign in” checked).</li>
+            <li>The FileFlipper icon appears in the notification area at the bottom-right (maybe under <b>^</b>). You're ready.</li>
+          </ol>
+          <p class="note"><span lang="zh">HEIC 照片需要 Microsoft Store 里的「HEIF 图像扩展」和「HEVC 视频扩展」；扫描件 OCR 使用 Windows 自带的文字识别。</span><span lang="en">HEIC photos need “HEIF Image Extensions” and “HEVC Video Extensions” from the Microsoft Store; OCR for scans uses Windows' built-in text recognition.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap faq">
+      <h2><span lang="zh">常见问题</span><span lang="en">FAQ</span></h2>
+      <p class="sub"></p>
+      <details>
+        <summary><span lang="zh">会上传我的文件吗？</span><span lang="en">Are my files uploaded?</span></summary>
+        <p><span lang="zh">不会。所有转换都在你自己的电脑上完成，FileFlipper 不联网。代码全部开源，任何人都可以检查。</span><span lang="en">Never. Everything runs on your own computer and FileFlipper doesn't use the network. All the code is open for anyone to check.</span></p>
+      </details>
+      <details>
+        <summary><span lang="zh">真的免费吗？</span><span lang="en">Is it really free?</span></summary>
+        <p><span lang="zh">是的，基于 MIT 许可证开源，可以免费使用、修改和分享。</span><span lang="en">Yes. It's open source under the MIT License — free to use, change and share.</span></p>
+      </details>
+      <details>
+        <summary><span lang="zh">按住 Shift 拖文件，按钮没出现？</span><span lang="en">I hold Shift while dragging but nothing appears.</span></summary>
+        <p><span lang="zh">先确认 FileFlipper 在运行（Mac 看右上角菜单栏，Windows 看右下角通知区域），并且菜单里「启用」是勾选的。要先按住鼠标开始拖，再按 Shift。只支持文件，不支持文件夹。</span><span lang="en">Make sure FileFlipper is running (menu bar on Mac, notification area on Windows) and “Enabled” is checked in its menu. Start dragging first, then hold Shift. It works with files, not folders.</span></p>
+      </details>
+      <details>
+        <summary><span lang="zh">Windows 上 Shift 拖动原本是「移动文件」，会冲突吗？</span><span lang="en">On Windows, Shift-drag normally moves files. Does this get in the way?</span></summary>
+        <p><span lang="zh">不会。按钮只出现在鼠标附近；继续拖出按钮范围，按钮就会消失，照常移动文件。也可以在托盘菜单里暂时关掉「启用」。</span><span lang="en">No. The buttons only cover the area around the pointer — keep dragging past them and they disappear, so the normal move still works. You can also turn off “Enabled” in the tray menu.</span></p>
+      </details>
+      <details>
+        <summary><span lang="zh">怎么卸载？</span><span lang="en">How do I uninstall it?</span></summary>
+        <p><span lang="zh">Mac：退出后把 FileFlipper 从「应用程序」拖到废纸篓。Windows：在「设置 → 应用」里卸载 FileFlipper。</span><span lang="en">Mac: quit it and drag FileFlipper from Applications to the Trash. Windows: uninstall it from Settings → Apps.</span></p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      <a href="https://github.com/Aimee51819/FileFlipper">GitHub</a> ·
+      <a href="https://github.com/Aimee51819/FileFlipper/releases"><span lang="zh">所有版本</span><span lang="en">All releases</span></a> ·
+      <a href="https://github.com/Aimee51819/FileFlipper/issues"><span lang="zh">反馈问题</span><span lang="en">Report an issue</span></a> ·
+      <a href="https://github.com/Aimee51819/FileFlipper/blob/main/PRIVACY.md"><span lang="zh">隐私</span><span lang="en">Privacy</span></a>
+    </p>
+    <p>© Aimee Sun · MIT License</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  // Language: remembered choice, else the browser's language.
+  var saved = null;
+  try { saved = localStorage.getItem("ff-lang"); } catch (e) {}
+  var lang = saved || ((navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en");
+  function setLang(value) {
+    root.setAttribute("data-lang", value);
+    root.setAttribute("lang", value === "zh" ? "zh-CN" : "en");
+    document.title = value === "zh" ? "FileFlipper — 拖一下就转好的文件转换器" : "FileFlipper — Convert files with a drag";
+  }
+  setLang(lang);
+  document.getElementById("lang").addEventListener("click", function () {
+    lang = lang === "zh" ? "en" : "zh";
+    setLang(lang);
+    try { localStorage.setItem("ff-lang", lang); } catch (e) {}
+  });
+
+  // Highlight the download that matches this computer.
+  var ua = navigator.userAgent || "";
+  var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+  var isWin = /win/i.test(platform) || /Windows/.test(ua);
+  var isMac = /mac/i.test(platform) && !/iPhone|iPad/.test(ua);
+  if (isWin) document.getElementById("dl-win").classList.add("recommended");
+  else if (isMac) document.getElementById("dl-mac").classList.add("recommended");
+  if (isWin) {
+    // Put Windows first on Windows.
+    var box = document.querySelector(".downloads");
+    box.insertBefore(document.getElementById("dl-win"), document.getElementById("dl-mac"));
+  }
+
+  // Show the latest version; if a file isn't in the latest release yet, send people to the releases page.
+  fetch("https://api.github.com/repos/Aimee51819/FileFlipper/releases/latest")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (release) {
+      if (!release) return;
+      var names = (release.assets || []).map(function (a) { return a.name; });
+      var page = release.html_url || "https://github.com/Aimee51819/FileFlipper/releases";
+      function size(name) {
+        var asset = (release.assets || []).filter(function (a) { return a.name === name; })[0];
+        return asset ? " · " + (asset.size / 1048576).toFixed(0) + " MB" : "";
+      }
+      if (names.indexOf("FileFlipper-Windows-Setup.exe") < 0) {
+        document.getElementById("btn-win").href = "https://github.com/Aimee51819/FileFlipper/releases";
+        document.getElementById("win-more").innerHTML =
+          '<span lang="zh">Windows 版即将发布，可以先到发布页看看。</span><span lang="en">The Windows version is on its way — check the releases page.</span>';
+      }
+      if (names.indexOf("FileFlipper-Windows.zip") < 0) {
+        ["win-zip", "win-zip-en"].forEach(function (id) { var a = document.getElementById(id); if (a) a.href = page; });
+      }
+      if (names.indexOf("FileFlipper.zip") < 0) document.getElementById("btn-mac").href = page;
+      var date = (release.published_at || "").slice(0, 10);
+      document.getElementById("version").innerHTML =
+        '<span lang="zh">最新版本 ' + release.tag_name + (date ? "（" + date + "）" : "") + ' · 免费 · MIT 开源 · 文件不会上传到任何地方</span>' +
+        '<span lang="en">Latest version ' + release.tag_name + (date ? " (" + date + ")" : "") + ' · Free · MIT open source · Your files never leave your computer</span>';
+      var macSize = size("FileFlipper.zip"), winSize = size("FileFlipper-Windows-Setup.exe");
+      if (macSize) document.querySelector("#dl-mac .dl-head p").insertAdjacentText("beforeend", macSize);
+      if (winSize) document.querySelector("#dl-win .dl-head p").insertAdjacentText("beforeend", winSize);
+    })
+    .catch(function () {});
+})();
+</script>
+</body>
+</html>

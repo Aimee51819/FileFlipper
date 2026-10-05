@@ -20,3 +20,18 @@ jobs:
         with:
           name: FileFlipper
           path: build/FileFlipper.zip
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build
+        shell: pwsh
+        run: ./windows/build.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FileFlipper-Windows
+          path: build/windows/FileFlipper.exe
