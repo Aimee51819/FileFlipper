@@ -14,7 +14,7 @@ namespace FileFlipper;
 /// <summary>The notification-area icon, its menu, and running the picked actions.</summary>
 public sealed class TrayApp
 {
-    public const string Website = "https://aimee51819.github.io/FileFlipper/";
+    public const string Website = "https://fileflipper.app/";
 
     private readonly Application application;
     private readonly DragMonitor monitor = new();

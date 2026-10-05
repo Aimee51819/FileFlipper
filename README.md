@@ -4,7 +4,7 @@
 **A free, open-source file converter that works inside Finder and File Explorer. One-click Markdown for AI — fewer tokens.**
 
 <p align="center">
-  <b>🌐 <a href="https://aimee51819.github.io/FileFlipper/">下载 / Download: aimee51819.github.io/FileFlipper</a></b><br>
+  <b>🌐 <a href="https://fileflipper.app">下载 / Download: fileflipper.app</a></b><br>
   <a href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip">Mac</a> ·
   <a href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe">Windows</a> ·
   <a href="#windows-版--windows-version">Windows 版说明 / Windows notes</a>
