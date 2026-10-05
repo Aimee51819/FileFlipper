@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FileFlipper 下载统计</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  :root { --bg: #fffaf5; --card: #fff; --ink: #40261a; --ink-2: #7a5a49; --line: #f0d7c2; --orange: #fa661f; --peach: #ffe0c2; --mac: #40261a; --win: #fa661f; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1d1714; --card: #2b221d; --ink: #fbeee3; --ink-2: #cdb4a4; --line: #4a3a31; --peach: #4a3426; --mac: #fbeee3; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; line-height: 1.5; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 16px 48px; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  header img { width: 40px; height: 40px; border-radius: 10px; }
+  h1 { font-size: 24px; margin: 0; }
+  header .updated { margin-left: auto; color: var(--ink-2); font-size: 13px; text-align: right; }
+  button { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 600px) { .tiles { grid-template-columns: 1fr; } header { flex-wrap: wrap; } header .updated { margin-left: 0; text-align: left; width: 100%; } }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .tile .label { color: var(--ink-2); font-size: 14px; }
+  .tile .value { font-size: 38px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .tile.total .value { color: var(--orange); }
+  .tile .sub { color: var(--ink-2); font-size: 13px; }
+  .split { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; margin-bottom: 18px; }
+  .bar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--peach); margin: 10px 0 8px; }
+  .bar span { display: block; height: 100%; }
+  .legend { display: flex; gap: 18px; font-size: 13px; color: var(--ink-2); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-size: 14.5px; }
+  th, td { padding: 11px 14px; text-align: right; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: color-mix(in srgb, var(--peach) 60%, var(--card)); font-size: 13px; }
+  tr:last-child td { border-bottom: 0; }
+  td .date { color: var(--ink-2); font-size: 12.5px; margin-left: 6px; }
+  .note { color: var(--ink-2); font-size: 13px; margin-top: 16px; }
+  .error { color: #c0392b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.png" alt="">
+    <h1>下载统计</h1>
+    <div class="updated"><span id="updated">加载中…</span><br><button id="refresh" type="button">刷新</button></div>
+  </header>
+
+  <div class="tiles">
+    <div class="tile total"><div class="label">总下载量</div><div class="value" id="total">–</div><div class="sub">所有版本合计</div></div>
+    <div class="tile"><div class="label">Mac 版</div><div class="value" id="mac">–</div><div class="sub">FileFlipper.zip</div></div>
+    <div class="tile"><div class="label">Windows 版</div><div class="value" id="win">–</div><div class="sub" id="win-sub">安装包 + 免安装版</div></div>
+  </div>
+
+  <div class="split">
+    <div><b>平台占比</b></div>
+    <div class="bar"><span id="bar-mac" style="background: var(--mac)"></span><span id="bar-win" style="background: var(--win)"></span></div>
+    <div class="legend"><span><i style="background: var(--mac)"></i>Mac <b id="pct-mac">–</b></span><span><i style="background: var(--win)"></i>Windows <b id="pct-win">–</b></span></div>
+  </div>
+
+  <table>
+    <thead><tr><th>版本</th><th>Mac</th><th>Windows 安装包</th><th>Windows 免安装</th><th>合计</th></tr></thead>
+    <tbody id="rows"><tr><td colspan="5">加载中…</td></tr></tbody>
+  </table>
+
+  <p class="note">数据来自 GitHub Releases，每次有人点下载按钮（或直接打开下载链接）计一次，不区分是不是同一个人。页面每 5 分钟自动刷新。</p>
+</div>
+
+<script>
+(function () {
+  var nf = new Intl.NumberFormat("zh-CN");
+  function count(release, test) {
+    return (release.assets || []).filter(function (a) { return test(a.name); })
+      .reduce(function (sum, a) { return sum + a.download_count; }, 0);
+  }
+  function isMac(name) { return name === "FileFlipper.zip"; }
+  function isSetup(name) { return /Windows-Setup\.exe$/.test(name); }
+  function isPortable(name) { return /Windows\.zip$/.test(name); }
+
+  function load() {
+    document.getElementById("updated").textContent = "加载中…";
+    fetch("https://api.github.com/repos/Aimee51819/FileFlipper/releases?per_page=100")
+      .then(function (r) { if (!r.ok) throw new Error("GitHub 返回 " + r.status); return r.json(); })
+      .then(function (releases) {
+        var mac = 0, setup = 0, portable = 0, rows = "";
+        releases.forEach(function (release) {
+          var m = count(release, isMac), s = count(release, isSetup), p = count(release, isPortable);
+          mac += m; setup += s; portable += p;
+          rows += "<tr><td><b>" + release.tag_name + "</b><span class=\"date\">" + (release.published_at || "").slice(0, 10) + "</span></td>" +
+            "<td>" + nf.format(m) + "</td><td>" + (s ? nf.format(s) : "—") + "</td><td>" + (p ? nf.format(p) : "—") + "</td><td><b>" + nf.format(m + s + p) + "</b></td></tr>";
+        });
+        var win = setup + portable, total = mac + win;
+        document.getElementById("rows").innerHTML = rows || "<tr><td colspan=\"5\">还没有发布</td></tr>";
+        document.getElementById("total").textContent = nf.format(total);
+        document.getElementById("mac").textContent = nf.format(mac);
+        document.getElementById("win").textContent = nf.format(win);
+        document.getElementById("win-sub").textContent = "安装包 " + nf.format(setup) + " · 免安装版 " + nf.format(portable);
+        var pm = total ? Math.round(mac / total * 100) : 0, pw = total ? 100 - pm : 0;
+        document.getElementById("bar-mac").style.width = pm + "%";
+        document.getElementById("bar-win").style.width = pw + "%";
+        document.getElementById("pct-mac").textContent = pm + "%";
+        document.getElementById("pct-win").textContent = pw + "%";
+        document.getElementById("updated").textContent = "更新于 " + new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+      })
+      .catch(function (error) {
+        document.getElementById("updated").innerHTML = "<span class=\"error\">加载失败：" + error.message + "</span>";
+      });
+  }
+  document.getElementById("refresh").addEventListener("click", load);
+  load();
+  setInterval(load, 5 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
