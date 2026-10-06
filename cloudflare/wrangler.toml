@@ -1,0 +1,21 @@
+# Cloudflare Worker that serves FileFlipper downloads from R2 (reachable from mainland China,
+# unlike GitHub's download servers). Deployed by .github/workflows/cloudflare.yml.
+name = "fileflipper-downloads"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+routes = [
+  { pattern = "dl.fileflipper.app", custom_domain = true },
+]
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "fileflipper-downloads"
+
+[[durable_objects.bindings]]
+name = "COUNTER"
+class_name = "DownloadCounter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DownloadCounter"]

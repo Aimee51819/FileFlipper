@@ -1,0 +1,107 @@
+# Copies the latest GitHub release to Cloudflare R2 and deploys the download Worker (dl.fileflipper.app),
+# because GitHub's download servers can't be reached from mainland China.
+#
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN ("Edit Cloudflare Workers" template, scoped to the
+# account and the fileflipper.app zone) and CLOUDFLARE_ACCOUNT_ID.
+#
+# Runs after every release (called from release.yml), when the Worker changes, or by hand.
+name: Cloudflare
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cloudflare/**"
+      - ".github/workflows/cloudflare.yml"
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
+      CLOUDFLARE_ACCOUNT_ID:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+      BUCKET: fileflipper-downloads
+    steps:
+      - name: Check secrets
+        id: check
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID are not set; skipping the Cloudflare mirror."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 22
+
+      - name: Install Wrangler
+        if: steps.check.outputs.ready == 'true'
+        run: npm install --global wrangler@4
+
+      - name: Create the R2 bucket if needed
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          if wrangler r2 bucket list | grep -q "$BUCKET"; then
+            echo "Bucket $BUCKET exists"
+          else
+            wrangler r2 bucket create "$BUCKET"
+          fi
+
+      - name: Download the latest release from GitHub
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          mkdir dist
+          gh release download --repo "$GITHUB_REPOSITORY" --dir dist
+          gh release view --repo "$GITHUB_REPOSITORY" --json tagName,publishedAt,assets > release.json
+          ls -l dist
+
+      - name: Upload to R2
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          tag=$(jq -r .tagName release.json)
+          for file in dist/*; do
+            name=$(basename "$file")
+            case "$name" in
+              *.zip) type=application/zip ;;
+              *.exe) type=application/vnd.microsoft.portable-executable ;;
+              *) type=application/octet-stream ;;
+            esac
+            # The versioned copy stays forever; the plain name always points to the latest release.
+            wrangler r2 object put "$BUCKET/$tag/$name" --file "$file" --content-type "$type" --remote
+            wrangler r2 object put "$BUCKET/$name" --file "$file" --content-type "$type" --remote
+          done
+          jq '{version: (.tagName | ltrimstr("v")), tag: .tagName, published: .publishedAt,
+               files: (.assets | map({key: .name, value: {size: .size}}) | from_entries)}' release.json > latest.json
+          cat latest.json
+          wrangler r2 object put "$BUCKET/latest.json" --file latest.json --content-type "application/json; charset=utf-8" --remote
+
+      - name: Deploy the Worker
+        if: steps.check.outputs.ready == 'true'
+        working-directory: cloudflare
+        run: wrangler deploy
+
+      - name: Check the downloads
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          sleep 20
+          for name in latest.json $(jq -r '.assets[].name' release.json); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -I "https://dl.fileflipper.app/$name")
+            echo "$name -> $code"
+          done

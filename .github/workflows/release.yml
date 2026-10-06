@@ -68,3 +68,9 @@ jobs:
             dist/FileFlipper-Windows-Setup.exe
             dist/FileFlipper-Windows.zip
           generate_release_notes: true
+
+  # Mirror the release to Cloudflare so it can be downloaded from mainland China.
+  cloudflare:
+    needs: release
+    uses: ./.github/workflows/cloudflare.yml
+    secrets: inherit
