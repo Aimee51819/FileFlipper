@@ -73,7 +73,7 @@ jobs:
         if: steps.check.outputs.ready == 'true'
         run: |
           mkdir dist
-          gh release download --repo "$GITHUB_REPOSITORY" --dir dist
+          gh release download --repo "$GITHUB_REPOSITORY" --pattern "*" --dir dist 2>&1 | tee -a wrangler.log
           gh release view --repo "$GITHUB_REPOSITORY" --json tagName,publishedAt,assets > release.json
           ls -l dist
 
