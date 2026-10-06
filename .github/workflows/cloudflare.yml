@@ -21,6 +21,10 @@ on:
       CLOUDFLARE_ACCOUNT_ID:
         required: false
 
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: read
 
@@ -58,10 +62,11 @@ jobs:
       - name: Create the R2 bucket if needed
         if: steps.check.outputs.ready == 'true'
         run: |
-          if wrangler r2 bucket list | grep -q "$BUCKET"; then
+          wrangler r2 bucket list 2>&1 | tee -a wrangler.log
+          if grep -q "$BUCKET" wrangler.log; then
             echo "Bucket $BUCKET exists"
           else
-            wrangler r2 bucket create "$BUCKET"
+            wrangler r2 bucket create "$BUCKET" 2>&1 | tee -a wrangler.log
           fi
 
       - name: Download the latest release from GitHub
@@ -84,18 +89,18 @@ jobs:
               *) type=application/octet-stream ;;
             esac
             # The versioned copy stays forever; the plain name always points to the latest release.
-            wrangler r2 object put "$BUCKET/$tag/$name" --file "$file" --content-type "$type" --remote
-            wrangler r2 object put "$BUCKET/$name" --file "$file" --content-type "$type" --remote
+            wrangler r2 object put "$BUCKET/$tag/$name" --file "$file" --content-type "$type" --remote 2>&1 | tee -a wrangler.log
+            wrangler r2 object put "$BUCKET/$name" --file "$file" --content-type "$type" --remote 2>&1 | tee -a wrangler.log
           done
           jq '{version: (.tagName | ltrimstr("v")), tag: .tagName, published: .publishedAt,
                files: (.assets | map({key: .name, value: {size: .size}}) | from_entries)}' release.json > latest.json
           cat latest.json
-          wrangler r2 object put "$BUCKET/latest.json" --file latest.json --content-type "application/json; charset=utf-8" --remote
+          wrangler r2 object put "$BUCKET/latest.json" --file latest.json --content-type "application/json; charset=utf-8" --remote 2>&1 | tee -a wrangler.log
 
       - name: Deploy the Worker
         if: steps.check.outputs.ready == 'true'
         working-directory: cloudflare
-        run: wrangler deploy
+        run: wrangler deploy 2>&1 | tee -a ../wrangler.log
 
       - name: Check the downloads
         if: steps.check.outputs.ready == 'true'
@@ -105,3 +110,10 @@ jobs:
             code=$(curl -s -o /dev/null -w "%{http_code}" -I "https://dl.fileflipper.app/$name")
             echo "$name -> $code"
           done
+
+      # Logs need a GitHub login to read; an annotation shows Wrangler's error on the public run page.
+      - name: Report the Wrangler error
+        if: failure()
+        run: |
+          msg=$(tail -n 30 wrangler.log 2>/dev/null | grep -v '^\s*$' | sed 's/%/%25/g' | tr '\n' '\r' | sed 's/\r/%0A/g')
+          echo "::error title=Wrangler::${msg:-no output}"
