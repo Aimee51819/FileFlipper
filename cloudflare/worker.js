@@ -59,7 +59,7 @@ export default {
 
     let status = 200;
     if (object.range && request.headers.has("range")) {
-      const { offset = 0, length = object.size - offset } = rangeOf(object.range, object.size);
+      const { offset, length } = rangeOf(object.range, object.size);
       headers.set("content-range", `bytes ${offset}-${offset + length - 1}/${object.size}`);
       headers.set("content-length", String(length));
       status = 206;
@@ -73,7 +73,8 @@ export default {
 };
 
 function rangeOf(range, size) {
-  if ("suffix" in range) return { offset: size - range.suffix, length: range.suffix };
+  // R2 fills in only some of offset / length / suffix; the others are present but undefined.
+  if (range.suffix !== undefined) return { offset: size - range.suffix, length: range.suffix };
   const offset = range.offset ?? 0;
   return { offset, length: range.length ?? size - offset };
 }
