@@ -1,15 +1,26 @@
-# Cloudflare Worker that serves FileFlipper downloads from R2 (reachable from mainland China,
-# unlike GitHub's download servers). Deployed by .github/workflows/cloudflare.yml.
+# Cloudflare Worker for FileFlipper: the website (docs/, served as static assets) at fileflipper.app
+# and the downloads from R2 at dl.fileflipper.app. Both are reachable from mainland China, unlike
+# GitHub's servers. Deployed by .github/workflows/cloudflare.yml.
+# (The name predates the website moving here; renaming it would reset the download counts.)
 name = "fileflipper-downloads"
 main = "worker.js"
 compatibility_date = "2026-09-01"
-# Only reachable at dl.fileflipper.app, not at a *.workers.dev address.
+# Only reachable at the custom domains below, not at a *.workers.dev address.
 workers_dev = false
 preview_urls = false
 
 routes = [
+  { pattern = "fileflipper.app", custom_domain = true },
+  { pattern = "www.fileflipper.app", custom_domain = true },
   { pattern = "dl.fileflipper.app", custom_domain = true },
 ]
+
+[assets]
+directory = "../docs"
+binding = "ASSETS"
+# The Worker decides per host: dl.* → downloads, www.* → redirect, everything else → the website.
+run_worker_first = true
+not_found_handling = "none"
 
 [[r2_buckets]]
 binding = "FILES"

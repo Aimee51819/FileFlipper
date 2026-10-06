@@ -1,7 +1,8 @@
-# Downloads on Cloudflare (dl.fileflipper.app)
+# FileFlipper on Cloudflare (fileflipper.app and dl.fileflipper.app)
 
-GitHub's download servers can't be reached from mainland China, so every release is also
-copied to a Cloudflare R2 bucket and served by the Worker in this folder.
+GitHub's servers are often unreachable from mainland China, so the website (the files in `docs/`)
+and every release are served from Cloudflare by the Worker in this folder. `www.fileflipper.app`
+redirects to `fileflipper.app`.
 
 | URL | What |
 |---|---|
@@ -12,7 +13,8 @@ copied to a Cloudflare R2 bucket and served by the Worker in this folder.
 | `https://dl.fileflipper.app/latest.json` | Latest version and file sizes (used by the website) |
 | `https://dl.fileflipper.app/stats.json` | Download counts per file |
 
-`.github/workflows/cloudflare.yml` uploads the latest GitHub release and deploys the Worker. It
+`.github/workflows/cloudflare.yml` uploads the latest GitHub release and deploys the Worker. Releases
+upload and deploy; changes to `docs/` or this folder only redeploy. It
 runs after every release, whenever this folder changes, or by hand (Actions → Cloudflare →
 Run workflow). It needs the repository secrets `CLOUDFLARE_API_TOKEN` (the "Edit Cloudflare
 Workers" token template, limited to this account and the fileflipper.app zone) and

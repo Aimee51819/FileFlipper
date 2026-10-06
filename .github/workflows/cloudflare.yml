@@ -1,16 +1,19 @@
-# Copies the latest GitHub release to Cloudflare R2 and deploys the download Worker (dl.fileflipper.app),
-# because GitHub's download servers can't be reached from mainland China.
+# Publishes FileFlipper on Cloudflare, which (unlike GitHub's servers) is reachable from mainland China:
+#   - mirror: copies the latest GitHub release into the R2 bucket behind dl.fileflipper.app
+#   - deploy: deploys the Worker that serves the website (docs/) and the downloads
 #
-# Needs two repository secrets: CLOUDFLARE_API_TOKEN ("Edit Cloudflare Workers" template, scoped to the
-# account and the fileflipper.app zone) and CLOUDFLARE_ACCOUNT_ID.
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN ("Edit Cloudflare Workers" token template, scoped to
+# the account and the fileflipper.app zone) and CLOUDFLARE_ACCOUNT_ID. R2 must be enabled in the dashboard.
 #
-# Runs after every release (called from release.yml), when the Worker changes, or by hand.
+# After a release (called from release.yml) or by hand: mirror + deploy.
+# When the website or the Worker changes: deploy only.
 name: Cloudflare
 
 on:
   push:
     branches: [main]
     paths:
+      - "docs/**"
       - "cloudflare/**"
       - ".github/workflows/cloudflare.yml"
   workflow_dispatch:
@@ -28,39 +31,33 @@ defaults:
 permissions:
   contents: read
 
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  BUCKET: fileflipper-downloads
+
 jobs:
   mirror:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       GH_TOKEN: ${{ github.token }}
-      BUCKET: fileflipper-downloads
     steps:
       - name: Check secrets
-        id: check
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "::warning::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID are not set; skipping the Cloudflare mirror."
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "::error::Set the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets."
+            exit 1
           fi
 
-      - uses: actions/checkout@v4
-        if: steps.check.outputs.ready == 'true'
-
       - uses: actions/setup-node@v4
-        if: steps.check.outputs.ready == 'true'
         with:
           node-version: 22
 
       - name: Install Wrangler
-        if: steps.check.outputs.ready == 'true'
         run: npm install --global wrangler@4
 
       - name: Create the R2 bucket if needed
-        if: steps.check.outputs.ready == 'true'
         run: |
           wrangler r2 bucket list 2>&1 | tee -a wrangler.log
           if grep -q "$BUCKET" wrangler.log; then
@@ -70,7 +67,6 @@ jobs:
           fi
 
       - name: Download the latest release from GitHub
-        if: steps.check.outputs.ready == 'true'
         run: |
           mkdir dist
           gh release download --repo "$GITHUB_REPOSITORY" --pattern "*" --dir dist 2>&1 | tee -a wrangler.log
@@ -78,7 +74,6 @@ jobs:
           ls -l dist
 
       - name: Upload to R2
-        if: steps.check.outputs.ready == 'true'
         run: |
           tag=$(jq -r .tagName release.json)
           for file in dist/*; do
@@ -97,21 +92,46 @@ jobs:
           cat latest.json
           wrangler r2 object put "$BUCKET/latest.json" --file latest.json --content-type "application/json; charset=utf-8" --remote 2>&1 | tee -a wrangler.log
 
-      - name: Deploy the Worker
-        if: steps.check.outputs.ready == 'true'
+      # Logs need a GitHub login to read; an annotation shows Wrangler's error on the public run page.
+      - name: Report the Wrangler error
+        if: failure()
+        run: |
+          msg=$(tail -n 30 wrangler.log 2>/dev/null | grep -v '^\s*$' | sed 's/%/%25/g' | tr '\n' '\r' | sed 's/\r/%0A/g')
+          echo "::error title=Wrangler::${msg:-no output}"
+
+  deploy:
+    needs: mirror
+    # Runs after the mirror, or on its own when the mirror is skipped (pushes).
+    if: always() && (needs.mirror.result == 'success' || needs.mirror.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Set the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Wrangler
+        run: npm install --global wrangler@4
+
+      - name: Deploy the Worker (website + downloads)
         working-directory: cloudflare
         run: wrangler deploy 2>&1 | tee -a ../wrangler.log
 
-      - name: Check the downloads
-        if: steps.check.outputs.ready == 'true'
+      - name: Check the site and downloads
         run: |
           sleep 20
-          for name in latest.json $(jq -r '.assets[].name' release.json); do
-            code=$(curl -s -o /dev/null -w "%{http_code}" -I "https://dl.fileflipper.app/$name")
-            echo "$name -> $code"
+          for url in https://fileflipper.app/ https://dl.fileflipper.app/latest.json https://dl.fileflipper.app/FileFlipper.zip; do
+            echo "$url -> $(curl -s -o /dev/null -w "%{http_code}" -I "$url")"
           done
 
-      # Logs need a GitHub login to read; an annotation shows Wrangler's error on the public run page.
       - name: Report the Wrangler error
         if: failure()
         run: |
