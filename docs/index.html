@@ -178,7 +178,7 @@
               <p><span lang="zh">macOS 14 或更新 · Apple 芯片和 Intel</span><span lang="en">macOS 14 or later · Apple silicon &amp; Intel</span></p>
             </div>
           </div>
-          <a class="btn" id="btn-mac" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip">
+          <a class="btn" id="btn-mac" href="https://dl.fileflipper.app/FileFlipper.zip">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>
             <span lang="zh">下载 Mac 版</span><span lang="en">Download for Mac</span>
           </a>
@@ -194,11 +194,11 @@
               <p><span lang="zh">Windows 10 / 11 · 64 位</span><span lang="en">Windows 10 / 11 · 64-bit</span></p>
             </div>
           </div>
-          <a class="btn" id="btn-win" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe">
+          <a class="btn" id="btn-win" href="https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>
             <span lang="zh">下载 Windows 版</span><span lang="en">Download for Windows</span>
           </a>
-          <p class="more" id="win-more"><span lang="zh">双击安装，不需要管理员权限。也可以下载<a id="win-zip" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip">免安装版 (.zip)</a>。</span><span lang="en">Double-click to install — no admin rights needed. Or get the <a id="win-zip-en" href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip">portable .zip</a>.</span></p>
+          <p class="more" id="win-more"><span lang="zh">双击安装，不需要管理员权限。也可以下载<a id="win-zip" href="https://dl.fileflipper.app/FileFlipper-Windows.zip">免安装版 (.zip)</a>。</span><span lang="en">Double-click to install — no admin rights needed. Or get the <a id="win-zip-en" href="https://dl.fileflipper.app/FileFlipper-Windows.zip">portable .zip</a>.</span></p>
         </div>
       </div>
       <p class="version" id="version"><span lang="zh">免费 · MIT 开源 · 文件不会上传到任何地方</span><span lang="en">Free · MIT open source · Your files never leave your computer</span></p>
@@ -402,33 +402,34 @@
     box.insertBefore(document.getElementById("dl-win"), document.getElementById("dl-mac"));
   }
 
-  // Show the latest version; if a file isn't in the latest release yet, send people to the releases page.
-  fetch("https://api.github.com/repos/Aimee51819/FileFlipper/releases/latest")
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (release) {
-      if (!release) return;
-      var names = (release.assets || []).map(function (a) { return a.name; });
-      var page = release.html_url || "https://github.com/Aimee51819/FileFlipper/releases";
-      function size(name) {
-        var asset = (release.assets || []).filter(function (a) { return a.name === name; })[0];
-        return asset ? " · " + (asset.size / 1048576).toFixed(0) + " MB" : "";
-      }
-      if (names.indexOf("FileFlipper-Windows-Setup.exe") < 0) {
-        document.getElementById("btn-win").href = "https://github.com/Aimee51819/FileFlipper/releases";
-        document.getElementById("win-more").innerHTML =
-          '<span lang="zh">Windows 版即将发布，可以先到发布页看看。</span><span lang="en">The Windows version is on its way — check the releases page.</span>';
-      }
-      if (names.indexOf("FileFlipper-Windows.zip") < 0) {
-        ["win-zip", "win-zip-en"].forEach(function (id) { var a = document.getElementById(id); if (a) a.href = page; });
-      }
-      if (names.indexOf("FileFlipper.zip") < 0) document.getElementById("btn-mac").href = page;
-      var date = (release.published_at || "").slice(0, 10);
-      document.getElementById("version").innerHTML =
-        '<span lang="zh">最新版本 ' + release.tag_name + (date ? "（" + date + "）" : "") + ' · 免费 · MIT 开源 · 文件不会上传到任何地方</span>' +
-        '<span lang="en">Latest version ' + release.tag_name + (date ? " (" + date + ")" : "") + ' · Free · MIT open source · Your files never leave your computer</span>';
-      var macSize = size("FileFlipper.zip"), winSize = size("FileFlipper-Windows-Setup.exe");
-      if (macSize) document.querySelector("#dl-mac .dl-head p").insertAdjacentText("beforeend", macSize);
-      if (winSize) document.querySelector("#dl-win .dl-head p").insertAdjacentText("beforeend", winSize);
+  // Show the latest version and file sizes. Read from Cloudflare (reachable in mainland China);
+  // fall back to the GitHub API. The download links themselves already point at dl.fileflipper.app.
+  function showRelease(tag, published, sizes) {
+    function size(name) { return sizes[name] ? " · " + (sizes[name] / 1048576).toFixed(0) + " MB" : ""; }
+    var date = (published || "").slice(0, 10);
+    document.getElementById("version").innerHTML =
+      '<span lang="zh">最新版本 ' + tag + (date ? "（" + date + "）" : "") + ' · 免费 · MIT 开源 · 文件不会上传到任何地方</span>' +
+      '<span lang="en">Latest version ' + tag + (date ? " (" + date + ")" : "") + ' · Free · MIT open source · Your files never leave your computer</span>';
+    var macSize = size("FileFlipper.zip"), winSize = size("FileFlipper-Windows-Setup.exe");
+    if (macSize) document.querySelector("#dl-mac .dl-head p").insertAdjacentText("beforeend", macSize);
+    if (winSize) document.querySelector("#dl-win .dl-head p").insertAdjacentText("beforeend", winSize);
+  }
+  fetch("https://dl.fileflipper.app/latest.json")
+    .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+    .then(function (latest) {
+      var sizes = {};
+      Object.keys(latest.files || {}).forEach(function (name) { sizes[name] = latest.files[name].size; });
+      showRelease(latest.tag, latest.published, sizes);
+    })
+    .catch(function () {
+      return fetch("https://api.github.com/repos/Aimee51819/FileFlipper/releases/latest")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (release) {
+          if (!release) return;
+          var sizes = {};
+          (release.assets || []).forEach(function (a) { sizes[a.name] = a.size; });
+          showRelease(release.tag_name, release.published_at, sizes);
+        });
     })
     .catch(function () {});
 })();

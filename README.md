@@ -5,8 +5,8 @@
 
 <p align="center">
   <b>🌐 <a href="https://fileflipper.app">下载 / Download: fileflipper.app</a></b><br>
-  <a href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip">Mac</a> ·
-  <a href="https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe">Windows</a> ·
+  <a href="https://dl.fileflipper.app/FileFlipper.zip">Mac</a> ·
+  <a href="https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe">Windows</a> ·
   <a href="#windows-版--windows-version">Windows 版说明 / Windows notes</a>
 </p>
 
@@ -73,7 +73,7 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 #### 方法 B：直接下载安装包
 
-1. 点这里下载：**[FileFlipper.zip](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip)**
+1. 点这里下载：**[FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip)**
 2. 打开「下载」文件夹，双击 `FileFlipper.zip`，会得到一个 **FileFlipper** 应用。
 3. 把 **FileFlipper** 拖进「应用程序」(Applications) 文件夹。
 4. 双击打开它。**第一次打开时 Mac 会提示「无法验证开发者」或「Apple 无法检查其是否包含恶意软件」**，这是因为这个下载版没有经过苹果的付费签名，属于正常现象。按下面做就能打开：
@@ -298,7 +298,7 @@ Once it's live, search for **FileFlipper** in the Mac App Store and click Get. A
 
 #### Option B: Download the app
 
-1. Download **[FileFlipper.zip](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip)**.
+1. Download **[FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip)**.
 2. Open your Downloads folder and double-click `FileFlipper.zip`. You'll get the **FileFlipper** app.
 3. Drag **FileFlipper** into your **Applications** folder.
 4. Double-click it. **The first time, your Mac will say it "cannot verify the developer" or "can't check it for malicious software."** This is normal for apps downloaded outside the App Store without Apple's paid signing. To open it:
@@ -485,7 +485,7 @@ Questions or ideas? Open an [issue](https://github.com/Aimee51819/FileFlipper/is
 
 FileFlipper 现在也有 Windows 版（Windows 10 / 11，64 位），用法和 Mac 版几乎一样：
 
-1. 下载 **[FileFlipper-Windows-Setup.exe](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe)**，双击安装（不需要管理员权限）。不想安装的话，也可以下载 **[免安装版 FileFlipper-Windows.zip](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip)**，解压后双击 `FileFlipper.exe`。
+1. 下载 **[FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe)**，双击安装（不需要管理员权限）。不想安装的话，也可以下载 **[免安装版 FileFlipper-Windows.zip](https://dl.fileflipper.app/FileFlipper-Windows.zip)**，解压后双击 `FileFlipper.exe`。
 2. 如果出现蓝色的「Windows 已保护你的电脑」，点「**更多信息**」→「**仍要运行**」。（下载版没有付费的代码签名证书，第一次会这样提示。）
 3. 装好后，FileFlipper 的图标在屏幕**右下角的通知区域**（可能藏在 **^** 里）。点它可以打开菜单：启用、开机时启动、显示在「发送到」菜单里、使用说明、退出。
 
@@ -510,7 +510,7 @@ FileFlipper 现在也有 Windows 版（Windows 10 / 11，64 位），用法和 M
 
 FileFlipper now runs on Windows 10 and 11 (64-bit) too, and works almost the same way:
 
-1. Download **[FileFlipper-Windows-Setup.exe](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe)** and double-click it (no admin rights needed), or get the **[portable FileFlipper-Windows.zip](https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip)** and run `FileFlipper.exe`.
+1. Download **[FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe)** and double-click it (no admin rights needed), or get the **[portable FileFlipper-Windows.zip](https://dl.fileflipper.app/FileFlipper-Windows.zip)** and run `FileFlipper.exe`.
 2. If a blue “Windows protected your PC” box appears, click **More info → Run anyway** (the download isn't signed with a paid code-signing certificate).
 3. The FileFlipper icon lives in the **notification area** at the bottom-right of the screen (maybe under **^**). Click it for the menu.
 
