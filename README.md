@@ -33,9 +33,9 @@
 
 ### FileFlipper 是什么？
 
-FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不需要打开它的窗口**，它安安静静待在屏幕右上角的菜单栏里。
+FileFlipper 是一个免费、开源的文件转换小工具，**Mac 和 Windows 都能用**。装好之后，你**不需要打开它的窗口**，它安安静静待在屏幕角落：Mac 上在右上角的菜单栏，Windows 上在右下角的通知区域。
 
-想转换文件时，只要在 Finder（访达）里**拖动文件，同时按住 Shift 键**，鼠标上方就会弹出一排**带图标的圆形按钮**（「格式气泡」）（就像上面的图）。把文件拖到想要的格式上，松开鼠标——转换好的新文件就出现在原文件旁边了。
+想转换文件时，只要在 Finder（访达）或 Windows 的文件资源管理器里**拖动文件，同时按住 Shift 键**，鼠标上方就会弹出一排**带图标的圆形按钮**（「格式气泡」）（就像上面的图）。把文件拖到想要的格式上，松开鼠标——转换好的新文件就出现在原文件旁边了。
 
 - 📸 照片 HEIC 转 JPG、PNG 转 PDF
 - 📄 Word 转 PDF、PDF 转图片或文字
@@ -43,7 +43,17 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 - 🎬 视频转 GIF、视频提取音频
 - ✂️ 裁剪图片、🗜 压缩图片 / PDF / 视频、抠图去背景、合并多个 PDF ……
 
-**所有处理都在你自己的 Mac 上完成，文件不会上传到任何地方，也不需要联网。**
+**所有处理都在你自己的电脑上完成，文件不会上传到任何地方，也不需要联网。**
+
+| | 🍎 Mac | 🪟 Windows |
+|---|---|---|
+| 系统要求 | macOS 14 或更新 | Windows 10 / 11（64 位） |
+| 下载 | [FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip)（即将上架 App Store） | [FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe) |
+| 转换格式 | 拖动时按住 **Shift** | 拖动时按住 **Shift** |
+| 工具 | **Option + Shift** | **Ctrl + Shift** |
+| 安装说明 | 见下方「第一步：安装」 | 见 [Windows 版](#windows-版--windows-version) |
+
+官网：**[fileflipper.app](https://fileflipper.app)**
 
 ### ⭐ 一键转 Markdown：喂给 AI 更省 token
 
@@ -51,8 +61,8 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 
 - **更省 token**：Markdown 是纯文本，只用很少的符号（`#`、`-`、`|`）表示标题、列表和表格。和直接上传 PDF / Word、或者粘贴网页内容相比，通常占用更少的 token，同样的额度能塞进更多内容。
 - **AI 读得更准**：标题层级、列表、表格结构都保留下来，AI 更容易理解文档结构，回答更准确。
-- **扫描件也行**：没有文字层的扫描 PDF 会自动用苹果自带的 OCR 识别文字（支持中英文）。
-- **全程离线**：转换在你的 Mac 上完成，文件不用先上传到任何转换网站，敏感文档更安全。
+- **扫描件也行**：没有文字层的扫描 PDF 会自动用系统自带的 OCR 识别文字（Mac 用苹果的，Windows 用微软的，支持中英文）。
+- **全程离线**：转换在你的电脑上完成，文件不用先上传到任何转换网站，敏感文档更安全。
 
 | 拖进来的文件 | 转成 Markdown 后保留 |
 |---|---|
@@ -64,6 +74,8 @@ FileFlipper 是一个免费、开源的 Mac 小工具。装好之后，你**不�
 ---
 
 ### 第一步：安装
+
+> 下面是 **Mac 版**的说明。Windows 用户请看 **[Windows 版](#windows-版--windows-version)**。
 
 需要 **macOS 14（Sonoma）或更新的系统**。（查看方法：点屏幕左上角的苹果标志  → 关于本机。）
 
@@ -258,9 +270,9 @@ Mac 系统自带的编码器不能生成 MP3。可以转成 M4A，音质更好�
 
 ### What is FileFlipper?
 
-FileFlipper is a free, open-source Mac utility. Once it's running you **never need to open a window** — it lives quietly in the menu bar at the top-right of your screen.
+FileFlipper is a free, open-source file converter for **Mac and Windows**. Once it's running you **never need to open a window**: it lives quietly in the menu bar at the top-right of your Mac, or in the notification area at the bottom-right on Windows.
 
-When you want to convert a file, just **drag it in Finder and hold the Shift key**. A curved row of round icon buttons appears above the pointer (like the pictures above). Drop the file on the format you want and let go — the converted copy appears right next to the original.
+When you want to convert a file, just **drag it in Finder or File Explorer and hold the Shift key**. A curved row of round icon buttons appears above the pointer (like the pictures above). Drop the file on the format you want and let go — the converted copy appears right next to the original.
 
 - 📸 HEIC photos → JPG, PNG → PDF
 - 📄 Word → PDF, PDF → images or text
@@ -268,7 +280,17 @@ When you want to convert a file, just **drag it in Finder and hold the Shift key
 - 🎬 Video → GIF, pull the audio out of a video
 - ✂️ Crop images, 🗜 compress images / PDFs / videos, remove photo backgrounds, merge PDFs…
 
-**Everything happens on your own Mac. Your files are never uploaded anywhere, and no internet connection is needed.**
+**Everything happens on your own computer. Your files are never uploaded anywhere, and no internet connection is needed.**
+
+| | 🍎 Mac | 🪟 Windows |
+|---|---|---|
+| Requires | macOS 14 or later | Windows 10 / 11 (64-bit) |
+| Download | [FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip) (Mac App Store coming soon) | [FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe) |
+| Convert | Hold **Shift** while dragging | Hold **Shift** while dragging |
+| Tools | **Option + Shift** | **Ctrl + Shift** |
+| Install guide | See Step 1 below | See [Windows version](#windows-版--windows-version) |
+
+Website: **[fileflipper.app](https://fileflipper.app)**
 
 ### ⭐ One-click Markdown: feed AI with fewer tokens
 
@@ -276,7 +298,7 @@ Drag a Word file, PDF, PowerPoint or Excel sheet, hold Shift and pick **MD**. Yo
 
 - **Fewer tokens**: Markdown is plain text that marks headings, lists and tables with just a few symbols (`#`, `-`, `|`). Compared with uploading a PDF or Word file, or pasting a web page, it usually takes fewer tokens, so more of your content fits in the same context window.
 - **Better answers**: the structure (heading levels, lists, tables) is kept, so the AI understands the document better.
-- **Scans too**: scanned PDFs without a text layer are read with Apple's on-device OCR (Chinese, English and more).
+- **Scans too**: scanned PDFs without a text layer are read with the system's on-device OCR (Apple's on Mac, Microsoft's on Windows; Chinese, English and more).
 - **Offline and private**: no need to upload sensitive documents to an online converter first.
 
 | Dragged file | What the Markdown keeps |
@@ -289,6 +311,8 @@ Drag a Word file, PDF, PowerPoint or Excel sheet, hold Shift and pick **MD**. Yo
 ---
 
 ### Step 1: Install
+
+> These steps are for the **Mac**. On Windows, see the **[Windows version](#windows-版--windows-version)** section.
 
 You need **macOS 14 (Sonoma) or later**. (To check: click the Apple logo  at the top-left → About This Mac.)
 
