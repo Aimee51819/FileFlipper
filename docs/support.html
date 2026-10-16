@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FileFlipper 帮助与支持 · Support</title>
+<meta name="description" content="FileFlipper 帮助与支持：联系方式和常见问题。FileFlipper support: how to get help and answers to common questions.">
+<link rel="canonical" href="https://fileflipper.app/support">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+  :root {
+    --bg: #fffaf5;
+    --bg-2: #fff1e4;
+    --card: #ffffff;
+    --ink: #40261a;
+    --ink-2: #7a5a49;
+    --line: #f0d7c2;
+    --orange: #fa661f;
+    --orange-dark: #d9500e;
+    --peach: #ffe0c2;
+    --shadow: 0 10px 30px rgba(120, 60, 20, .10), 0 2px 6px rgba(120, 60, 20, .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1d1714;
+      --bg-2: #2a201b;
+      --card: #2b221d;
+      --ink: #fbeee3;
+      --ink-2: #cdb4a4;
+      --line: #4a3a31;
+      --peach: #4a3426;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  html[data-lang="zh"] [lang="en"], html[data-lang="en"] [lang="zh"] { display: none !important; }
+  a { color: var(--orange-dark); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+  header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar { display: flex; align-items: center; gap: 12px; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; }
+  .brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .bar nav { margin-left: auto; display: flex; align-items: center; gap: 18px; font-size: 14px; }
+  .bar nav a { color: var(--ink-2); text-decoration: none; }
+  .bar nav a:hover { color: var(--orange-dark); }
+  .lang { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+
+  .hero { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); padding: 56px 0 40px; text-align: center; }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.2; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .lede { color: var(--ink-2); font-size: 18px; margin: 0 auto; max-width: 620px; }
+
+  section { padding: 44px 0; }
+  h2 { font-size: 26px; margin: 0 0 18px; }
+
+  .contact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 640px) { .contact { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); }
+  .card.main { border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 18%, transparent), var(--shadow); }
+  .card h3 { margin: 0 0 6px; font-size: 18px; }
+  .card p { margin: 0 0 14px; color: var(--ink-2); font-size: 15px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--orange); color: #fff; text-decoration: none; font-weight: 700; padding: 11px 18px; border-radius: 12px; }
+  .btn:hover { background: var(--orange-dark); }
+  .btn.ghost { background: transparent; color: var(--orange-dark); border: 1.5px solid var(--orange); }
+  .email { font-weight: 700; color: var(--ink); word-break: break-all; }
+
+  .tips { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 22px; margin-top: 16px; }
+  .tips ul { margin: 6px 0 0; padding-left: 20px; color: var(--ink-2); font-size: 15px; }
+
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 0 18px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 600; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--orange); font-weight: 700; font-size: 20px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details > div { padding: 0 0 16px; color: var(--ink-2); font-size: 15px; }
+  details > div p { margin: 0 0 8px; }
+  kbd { font: 600 .85em "Segoe UI", -apple-system, sans-serif; background: var(--bg-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 1px 7px; color: var(--ink); }
+  .os { display: inline-block; font-size: 12px; font-weight: 700; color: var(--orange-dark); background: color-mix(in srgb, var(--peach) 60%, transparent); border-radius: 999px; padding: 1px 9px; margin-right: 6px; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; text-align: center; color: var(--ink-2); font-size: 14px; }
+  footer p { margin: 4px 0; }
+  footer a { color: var(--ink-2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="/"><img src="icon.png" alt="">FileFlipper</a>
+    <nav>
+      <a href="/"><span lang="zh">首页</span><span lang="en">Home</span></a>
+      <a href="https://github.com/Aimee51819/FileFlipper/blob/main/PRIVACY.md"><span lang="zh">隐私</span><span lang="en">Privacy</span></a>
+      <button class="lang" id="lang" type="button" aria-label="Switch language"><span lang="zh">English</span><span lang="en">中文</span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <h1><span lang="zh">帮助与支持</span><span lang="en">Support</span></h1>
+      <p class="lede">
+        <span lang="zh">使用 FileFlipper 遇到问题、有建议，或者想要新功能？告诉我们，我们会尽快回复。</span>
+        <span lang="en">Having trouble with FileFlipper, or have an idea for a new feature? Let us know and we'll get back to you.</span>
+      </p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2><span lang="zh">联系我们</span><span lang="en">Contact us</span></h2>
+      <div class="contact">
+        <div class="card main">
+          <h3><span lang="zh">发邮件</span><span lang="en">Email</span></h3>
+          <p>
+            <span lang="zh">最简单的方式，不需要任何账号。我们通常在 2 个工作日内回复，中文或英文都可以。</span>
+            <span lang="en">The easiest way, no account needed. We usually reply within 2 business days, in English or Chinese.</span>
+          </p>
+          <p class="email">support@fileflipper.app</p>
+          <a class="btn" href="mailto:support@fileflipper.app?subject=FileFlipper%20support"><span lang="zh">写邮件</span><span lang="en">Send an email</span></a>
+        </div>
+        <div class="card">
+          <h3><span lang="zh">在 GitHub 上反馈</span><span lang="en">GitHub</span></h3>
+          <p>
+            <span lang="zh">如果你有 GitHub 账号，也可以公开提交问题或建议，其他用户也能看到解决方法。</span>
+            <span lang="en">If you have a GitHub account, you can also report a problem or suggest a feature in public, so other people can see the answer too.</span>
+          </p>
+          <a class="btn ghost" href="https://github.com/Aimee51819/FileFlipper/issues"><span lang="zh">打开 GitHub Issues</span><span lang="en">Open GitHub Issues</span></a>
+        </div>
+      </div>
+      <div class="tips">
+        <strong><span lang="zh">写邮件时附上这些，能更快帮你解决：</span><span lang="en">To help us help you faster, please include:</span></strong>
+        <ul>
+          <li><span lang="zh">你用的是 Mac 还是 Windows，以及系统版本</span><span lang="en">Whether you use Mac or Windows, and the system version</span></li>
+          <li><span lang="zh">FileFlipper 的版本（点菜单栏或通知区域的 FileFlipper 图标 →「关于 FileFlipper」）</span><span lang="en">Your FileFlipper version (click the FileFlipper icon in the menu bar or notification area → About FileFlipper)</span></li>
+          <li><span lang="zh">你在转换什么类型的文件、选了哪个按钮，以及屏幕上的提示文字（截图最好）</span><span lang="en">What kind of file you were converting, which button you chose, and any message on screen (a screenshot helps)</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0">
+    <div class="wrap">
+      <h2><span lang="zh">常见问题</span><span lang="en">Frequently asked questions</span></h2>
+
+      <details>
+        <summary><span lang="zh">怎么转换文件？</span><span lang="en">How do I convert a file?</span></summary>
+        <div>
+          <p><span lang="zh">在访达（Mac）或文件资源管理器（Windows）里按住鼠标拖动一个文件，拖动的同时按住 <kbd>Shift</kbd>，鼠标旁边会弹出一排格式按钮。往想要的格式方向拖一下，松开鼠标，转换好的新文件就保存在原文件旁边，原文件不会被改动。</span>
+          <span lang="en">Start dragging a file in Finder (Mac) or File Explorer (Windows) and, while still holding the mouse button, hold <kbd>Shift</kbd>. Round format buttons appear next to the pointer. Move toward a format and let go. The converted copy is saved next to the original, which is never changed.</span></p>
+          <p><span lang="zh">想用工具（裁剪、压缩、抠图、提取文字等）：Mac 按住 <kbd>Option</kbd> + <kbd>Shift</kbd>，Windows 按住 <kbd>Ctrl</kbd> + <kbd>Shift</kbd>。</span>
+          <span lang="en">For tools (crop, compress, remove background, extract text and more), hold <kbd>Option</kbd> + <kbd>Shift</kbd> on Mac or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> on Windows.</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span lang="zh">按住 Shift 拖文件，按钮没有出现</span><span lang="en">I hold Shift while dragging, but no buttons appear</span></summary>
+        <div>
+          <p><span lang="zh">1. 确认 FileFlipper 正在运行：Mac 看屏幕右上角菜单栏有没有 ◎ 图标，Windows 看右下角通知区域（可能藏在 ^ 里）。没有的话，重新打开 FileFlipper。</span>
+          <span lang="en">1. Make sure FileFlipper is running: on Mac, look for the ◎ icon in the menu bar at the top right; on Windows, in the notification area at the bottom right (it may be under ^). If it isn't there, open FileFlipper again.</span></p>
+          <p><span lang="zh">2. 点这个图标，确认「启用」前面有勾。</span><span lang="en">2. Click the icon and make sure Enabled is checked.</span></p>
+          <p><span lang="zh">3. 要先按住鼠标开始拖动，再按 Shift。只选中文件按 Shift 不会弹出按钮。拖文件夹也不会弹出。</span><span lang="en">3. Start dragging first, then hold Shift. Pressing Shift with a file only selected does nothing, and folders aren't supported.</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="os">Mac</span><span lang="zh">提示需要文件夹权限</span><span lang="en">It asks for folder access</span></summary>
+        <div>
+          <p><span lang="zh">Mac App Store 版的 App 需要你允许，才能把文件保存到某个文件夹。弹出窗口时选择你的个人文件夹（带小房子图标的那个），点「授权」，以后就不会再问了。也可以随时点菜单栏图标 →「允许访问个人文件夹…」。</span>
+          <span lang="en">Apps from the Mac App Store need your permission before saving into a folder. When the window appears, choose your Home folder (the one with the house icon) and click Grant Access; it won't ask again. You can also do this any time from the menu bar icon → Allow Home Folder….</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span lang="zh">打开时提示「无法验证开发者」或「Windows 已保护你的电脑」</span><span lang="en">“Cannot verify the developer” or “Windows protected your PC”</span></summary>
+        <div>
+          <p><span class="os">Mac</span><span lang="zh">从网站下载的版本第一次打开时：去「系统设置 → 隐私与安全性」，往下找到 FileFlipper，点「仍要打开」。从 Mac App Store 安装的版本不会有这个提示。</span>
+          <span lang="en">For the version downloaded from this website, on first launch: open System Settings → Privacy &amp; Security, scroll down to FileFlipper and click Open Anyway. The Mac App Store version never shows this.</span></p>
+          <p><span class="os">Windows</span><span lang="zh">点「更多信息」→「仍要运行」。</span><span lang="en">Click More info → Run anyway.</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span lang="zh">支持哪些文件？</span><span lang="en">Which files are supported?</span></summary>
+        <div>
+          <p><span lang="zh">图片（JPG、PNG、HEIC、WEBP、TIFF、GIF、BMP）、PDF、文档（Word、RTF、ODT、HTML、TXT、Markdown）、PPT（.pptx）、Excel（.xlsx）、视频和音频。所有文档都可以一键转成 Markdown。旧版的 .ppt / .xls 请先用 Office 另存为新格式。</span>
+          <span lang="en">Images (JPG, PNG, HEIC, WEBP, TIFF, GIF, BMP), PDF, documents (Word, RTF, ODT, HTML, TXT, Markdown), PowerPoint (.pptx), Excel (.xlsx), video and audio. Any document can be turned into Markdown. Please save old .ppt / .xls files in the new format first.</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span lang="zh">我的文件会被上传吗？</span><span lang="en">Are my files uploaded anywhere?</span></summary>
+        <div>
+          <p><span lang="zh">不会。FileFlipper 不联网，所有转换都在你自己的电脑上完成，不收集任何数据。详见<a href="https://github.com/Aimee51819/FileFlipper/blob/main/PRIVACY.md">隐私政策</a>。</span>
+          <span lang="en">No. FileFlipper never connects to the internet; every conversion happens on your own computer and no data is collected. See the <a href="https://github.com/Aimee51819/FileFlipper/blob/main/PRIVACY.md">privacy policy</a>.</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span lang="zh">界面是中文的吗？</span><span lang="en">Which languages does it support?</span></summary>
+        <div>
+          <p><span lang="zh">支持简体中文和英文，会跟随电脑的系统语言自动切换。</span><span lang="en">English and Simplified Chinese. FileFlipper follows your computer's system language.</span></p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span lang="zh">怎么卸载？</span><span lang="en">How do I uninstall it?</span></summary>
+        <div>
+          <p><span class="os">Mac</span><span lang="zh">点菜单栏图标 →「退出 FileFlipper」，再把「应用程序」里的 FileFlipper 拖到废纸篓。</span><span lang="en">Click the menu bar icon → Quit FileFlipper, then drag FileFlipper from Applications to the Trash.</span></p>
+          <p><span class="os">Windows</span><span lang="zh">「设置 → 应用 → 已安装的应用」里找到 FileFlipper，点「卸载」。</span><span lang="en">Settings → Apps → Installed apps → FileFlipper → Uninstall.</span></p>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      <a href="/"><span lang="zh">首页</span><span lang="en">Home</span></a> ·
+      <a href="https://github.com/Aimee51819/FileFlipper">GitHub</a> ·
+      <a href="https://github.com/Aimee51819/FileFlipper/blob/main/PRIVACY.md"><span lang="zh">隐私</span><span lang="en">Privacy</span></a> ·
+      <a href="mailto:support@fileflipper.app">support@fileflipper.app</a>
+    </p>
+    <p>© Aimee Sun · MIT License</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem("ff-lang"); } catch (e) {}
+  var lang = saved || ((navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en");
+  function setLang(value) {
+    root.setAttribute("data-lang", value);
+    root.setAttribute("lang", value === "zh" ? "zh-CN" : "en");
+    document.title = value === "zh" ? "FileFlipper 帮助与支持" : "FileFlipper Support";
+  }
+  setLang(lang);
+  document.getElementById("lang").addEventListener("click", function () {
+    lang = lang === "zh" ? "en" : "zh";
+    setLang(lang);
+    try { localStorage.setItem("ff-lang", lang); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
