@@ -5,7 +5,8 @@
 
 <p align="center">
   <b>🌐 <a href="https://fileflipper.app">下载 / Download: fileflipper.app</a></b><br>
-  <a href="https://dl.fileflipper.app/FileFlipper.zip">Mac</a> ·
+  <a href="https://apps.apple.com/app/fileflipper/id6818597213">Mac App Store</a> ·
+  <a href="https://dl.fileflipper.app/FileFlipper.zip">Mac (.zip)</a> ·
   <a href="https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe">Windows</a> ·
   <a href="#windows-版--windows-version">Windows 版说明 / Windows notes</a>
 </p>
@@ -48,7 +49,7 @@ FileFlipper 是一个免费、开源的文件转换小工具，**Mac 和 Windows
 | | 🍎 Mac | 🪟 Windows |
 |---|---|---|
 | 系统要求 | macOS 14 或更新 | Windows 10 / 11（64 位） |
-| 下载 | [FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip)（即将上架 App Store） | [FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe) |
+| 下载 | **[Mac App Store](https://apps.apple.com/app/fileflipper/id6818597213)**（推荐），或 [FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip) | [FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe) |
 | 转换格式 | 拖动时按住 **Shift** | 拖动时按住 **Shift** |
 | 工具 | **Option + Shift** | **Ctrl + Shift** |
 | 安装说明 | 见下方「第一步：安装」 | 见 [Windows 版](#windows-版--windows-version) |
@@ -79,9 +80,9 @@ FileFlipper 是一个免费、开源的文件转换小工具，**Mac 和 Windows
 
 需要 **macOS 14（Sonoma）或更新的系统**。（查看方法：点屏幕左上角的苹果标志  → 关于本机。）
 
-#### 方法 A：从 App Store 安装（最简单，即将上架）
+#### 方法 A：从 Mac App Store 安装（最简单，推荐）
 
-上架后在 Mac App Store 搜索 **FileFlipper**，点「获取」即可。上架后这里会放链接。
+打开 **[FileFlipper 的 App Store 页面](https://apps.apple.com/app/fileflipper/id6818597213)**，点「获取」即可。也可以在 Mac App Store 里搜索 **FileFlipper**。App Store 版会自动更新，打开时也不会有「无法验证开发者」的提示。
 
 #### 方法 B：直接下载安装包
 
@@ -285,7 +286,7 @@ When you want to convert a file, just **drag it in Finder or File Explorer and h
 | | 🍎 Mac | 🪟 Windows |
 |---|---|---|
 | Requires | macOS 14 or later | Windows 10 / 11 (64-bit) |
-| Download | [FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip) (Mac App Store coming soon) | [FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe) |
+| Download | **[Mac App Store](https://apps.apple.com/app/fileflipper/id6818597213)** (recommended), or [FileFlipper.zip](https://dl.fileflipper.app/FileFlipper.zip) | [FileFlipper-Windows-Setup.exe](https://dl.fileflipper.app/FileFlipper-Windows-Setup.exe) |
 | Convert | Hold **Shift** while dragging | Hold **Shift** while dragging |
 | Tools | **Option + Shift** | **Ctrl + Shift** |
 | Install guide | See Step 1 below | See [Windows version](#windows-版--windows-version) |
@@ -316,9 +317,9 @@ Drag a Word file, PDF, PowerPoint or Excel sheet, hold Shift and pick **MD**. Yo
 
 You need **macOS 14 (Sonoma) or later**. (To check: click the Apple logo  at the top-left → About This Mac.)
 
-#### Option A: Mac App Store (easiest — coming soon)
+#### Option A: Mac App Store (easiest, recommended)
 
-Once it's live, search for **FileFlipper** in the Mac App Store and click Get. A link will be added here.
+Open **[FileFlipper on the App Store](https://apps.apple.com/app/fileflipper/id6818597213)** and click Get, or search for **FileFlipper** in the Mac App Store. The App Store version updates automatically and never shows a "cannot verify the developer" prompt.
 
 #### Option B: Download the app
 

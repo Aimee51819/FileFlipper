@@ -87,6 +87,8 @@
   .btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--orange); color: #fff; text-decoration: none; font-weight: 700; font-size: 16px; padding: 13px 18px; border-radius: 14px; transition: background .15s, transform .15s; }
   .btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
   .btn svg { width: 18px; height: 18px; }
+  .btn.ghost { background: transparent; color: var(--orange-dark); border: 1.5px solid var(--orange); padding: 10px 16px; font-size: 15px; }
+  .btn.ghost:hover { background: color-mix(in srgb, var(--orange) 10%, transparent); color: var(--orange-dark); }
   .dl .more { font-size: 13px; color: var(--ink-2); margin: 0; }
   .version { margin-top: 18px; font-size: 13px; color: var(--ink-2); }
 
@@ -179,11 +181,14 @@
               <p><span lang="zh">macOS 14 或更新 · Apple 芯片和 Intel</span><span lang="en">macOS 14 or later · Apple silicon &amp; Intel</span></p>
             </div>
           </div>
-          <a class="btn" id="btn-mac" href="https://dl.fileflipper.app/FileFlipper.zip">
+          <a class="btn" id="btn-mac" href="https://apps.apple.com/app/fileflipper/id6818597213">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>
-            <span lang="zh">下载 Mac 版</span><span lang="en">Download for Mac</span>
+            <span lang="zh">在 Mac App Store 获取</span><span lang="en">Get it on the Mac App Store</span>
           </a>
-          <p class="more"><span lang="zh">下载后解压，把 FileFlipper 拖进「应用程序」。第一次打开见 <a href="#install">安装帮助</a>。</span><span lang="en">Unzip it and drag FileFlipper into Applications. First launch: see <a href="#install">install help</a>.</span></p>
+          <a class="btn ghost" id="btn-mac-zip" href="https://dl.fileflipper.app/FileFlipper.zip">
+            <span lang="zh">或者直接下载 .zip</span><span lang="en">Or download the .zip</span>
+          </a>
+          <p class="more"><span lang="zh">推荐用 App Store 安装：一键安装、自动更新，打开时不会有安全提示。直接下载的版本见 <a href="#install">安装帮助</a>。</span><span lang="en">The App Store is the easiest way: one-click install, automatic updates and no security prompts. For the direct download, see <a href="#install">install help</a>.</span></p>
         </div>
 
         <div class="dl" id="dl-win">
@@ -298,6 +303,7 @@
       <div class="install">
         <div class="card">
           <h3><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.65-.39 6.58 1.1 8.73.73 1.05 1.6 2.23 2.73 2.19 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.3-3.49zM14.19 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21z"/></svg>macOS</h3>
+          <p class="note"><span lang="zh">从 <a href="https://apps.apple.com/app/fileflipper/id6818597213">Mac App Store</a> 安装的不需要下面这些步骤，打开就能用。</span><span lang="en">Installed from the <a href="https://apps.apple.com/app/fileflipper/id6818597213">Mac App Store</a>? Skip these steps, it opens right away.</span></p>
           <ol lang="zh">
             <li>双击 <b>FileFlipper.zip</b> 解压，把 FileFlipper 拖进「应用程序」。</li>
             <li>双击打开，提示「无法验证开发者」时点「完成」（不要移到废纸篓）。</li>
