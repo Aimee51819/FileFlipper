@@ -40,6 +40,15 @@ public sealed class DragMonitor
     public void Start() => timer.Start();
     public void Stop() => timer.Stop();
 
+    /// <summary>Starts over with a clean state, e.g. after the PC resumes from sleep.</summary>
+    public void Restart()
+    {
+        timer.Stop();
+        armed = false;
+        mouseWasDown = false;
+        timer.Start();
+    }
+
     private void Tick()
     {
         bool mouseDown = Native.PrimaryButtonDown;

@@ -46,6 +46,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self?.run(item, on: urls)
         }
         monitor.start()
+        // Timers can stall across sleep, screen lock and user switching; start fresh afterwards.
+        let center = NSWorkspace.shared.notificationCenter
+        for name in [NSWorkspace.didWakeNotification, NSWorkspace.screensDidWakeNotification,
+                     NSWorkspace.sessionDidBecomeActiveNotification] {
+            center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                self?.monitor.restart()
+            }
+        }
 
         if !UserDefaults.standard.bool(forKey: Keys.shownWelcome) {
             UserDefaults.standard.set(true, forKey: Keys.shownWelcome)

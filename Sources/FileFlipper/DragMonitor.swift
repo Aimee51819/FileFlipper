@@ -24,12 +24,24 @@ final class DragMonitor {
     private var changeCountAtMouseDown = 0
     private var pickerShown = false
     private var toolsMode = false
+    /// Keeps App Nap from throttling the timer. A menu bar app has no visible window, so after a
+    /// while in the background macOS would otherwise slow the polling down until drags are missed.
+    private var activity: NSObjectProtocol?
 
     func start() {
+        stop()
+        if activity == nil {
+            activity = ProcessInfo.processInfo.beginActivity(
+                options: [.userInitiatedAllowingIdleSystemSleep, .latencyCritical],
+                reason: "Watching for file drags")
+        }
+        mouseWasDown = false
+        pickerShown = false
         changeCountAtMouseDown = dragPasteboard.changeCount
         let timer = Timer(timeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
             self?.tick()
         }
+        timer.tolerance = 0.005
         RunLoop.main.add(timer, forMode: .common)
         self.timer = timer
     }
@@ -37,6 +49,11 @@ final class DragMonitor {
     func stop() {
         timer?.invalidate()
         timer = nil
+    }
+
+    /// Starts over with a fresh timer, e.g. after the Mac wakes from sleep.
+    func restart() {
+        start()
     }
 
     private func tick() {

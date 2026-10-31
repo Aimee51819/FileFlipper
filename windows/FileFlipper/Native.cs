@@ -36,6 +36,26 @@ internal static class Native
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern uint GetDpiForSystem();
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PROCESS_POWER_THROTTLING_STATE { public uint Version; public uint ControlMask; public uint StateMask; }
+
+    [DllImport("kernel32.dll")] private static extern IntPtr GetCurrentProcess();
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetProcessInformation(IntPtr process, int informationClass, ref PROCESS_POWER_THROTTLING_STATE information, uint size);
+
+    /// <summary>
+    /// Opts out of EcoQoS ("efficiency mode"). Windows throttles background processes that have no
+    /// visible window, which would slow the drag polling down until drags are missed.
+    /// </summary>
+    public static void DisablePowerThrottling()
+    {
+        const int ProcessPowerThrottling = 4;
+        const uint ExecutionSpeed = 0x1;
+        var state = new PROCESS_POWER_THROTTLING_STATE { Version = 1, ControlMask = ExecutionSpeed, StateMask = 0 };
+        try { SetProcessInformation(GetCurrentProcess(), ProcessPowerThrottling, ref state, (uint)Marshal.SizeOf<PROCESS_POWER_THROTTLING_STATE>()); }
+        catch { /* Older Windows versions don't have this; nothing to do. */ }
+    }
+
     public static bool IsDown(int key) => (GetAsyncKeyState(key) & 0x8000) != 0;
 
     /// <summary>The primary button, which is the right one when the buttons are swapped.</summary>

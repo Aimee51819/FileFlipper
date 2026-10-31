@@ -36,7 +36,17 @@ public sealed class TrayApp
         monitor.ModeChanged += tools => picker.SetToolsMode(tools);
         monitor.Ended += () => picker.EndDrag();
         picker.Picked += Run;
+        Native.DisablePowerThrottling();
         monitor.Start();
+        // Timers can stall across sleep and screen lock; start fresh afterwards.
+        Microsoft.Win32.SystemEvents.PowerModeChanged += (_, e) =>
+        {
+            if (e.Mode == Microsoft.Win32.PowerModes.Resume) application.Dispatcher.BeginInvoke(monitor.Restart);
+        };
+        Microsoft.Win32.SystemEvents.SessionSwitch += (_, e) =>
+        {
+            if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionUnlock) application.Dispatcher.BeginInvoke(monitor.Restart);
+        };
 
         if (!Settings.ShownWelcome)
         {
