@@ -71,6 +71,11 @@ enum DocumentConverter {
             try markdown.write(to: output, atomically: true, encoding: .utf8)
             return output
         }
+        // PDF: let Microsoft Word do it when it's installed, so the result matches Word's own print.
+        if target.ext == "pdf", WordAutomation.canExport(url) {
+            let output = OutputNaming.next(to: url, ext: "pdf")
+            if WordAutomation.exportPDF(from: url, to: output) { return output }
+        }
         let document = try readDocument(url)
         let output = OutputNaming.next(to: url, ext: target.ext)
         try write(document.text, to: output, target: target, page: document.page)

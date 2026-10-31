@@ -98,7 +98,11 @@ enum Catalog {
             return DocumentConverter.targets
                 .filter { !$0.matches(ext: sourceExt) }
                 .map { target in
-                    PickerItem(title: target.title, detail: target.ext == "md" ? L("Markdown, ready for AI") : nil,
+                    PickerItem(title: target.title,
+                               detail: target.ext == "md" ? L("Markdown, ready for AI")
+                                   : target.ext == "pdf" && WordAutomation.extensions.contains(sourceExt)
+                                       && WordAutomation.isEnabled && WordAutomation.isInstalled
+                                   ? L("Made by Microsoft Word, like printing") : nil,
                                runsOnMain: true, action: perFile(kind) { url in
                         try [DocumentConverter.convert(url, to: target)]
                     })

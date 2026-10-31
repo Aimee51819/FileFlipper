@@ -108,3 +108,6 @@
 "No subject found in %@" = "在 %@ 里没有找到主体";
 "Couldn't render the cutout" = "无法生成抠图";
 "%@ has no slides" = "%@ 里没有幻灯片";
+"Made by Microsoft Word, like printing" = "由 Microsoft Word 生成，和打印效果一样";
+"Use Microsoft Word for Word → PDF" = "Word 转 PDF 时使用 Microsoft Word";
+"Word documents are turned into PDFs by Word itself, so they look exactly like printing from Word." = "Word 文档会由 Word 自己转成 PDF，效果和在 Word 里打印完全一样。";

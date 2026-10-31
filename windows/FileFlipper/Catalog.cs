@@ -105,7 +105,8 @@ public static class Catalog
                     items.Add(new PickerItem
                     {
                         Title = target.Title,
-                        Detail = target.Ext == "md" ? L("Markdown, ready for AI") : null,
+                        Detail = target.Ext == "md" ? L("Markdown, ready for AI")
+                            : target.Ext == "pdf" && WordAutomation.IsInstalled && Array.IndexOf(WordAutomation.Extensions, sourceExt) >= 0 ? L("Made by Microsoft Word, like printing") : null,
                         Action = PerFile(kind, p => new() { DocumentConverter.Convert(p, target) }),
                     });
                 }

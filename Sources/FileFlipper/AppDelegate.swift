@@ -139,6 +139,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         login.state = SMAppService.mainApp.status == .enabled ? .on : .off
         menu.addItem(login)
 
+        if WordAutomation.isInstalled {
+            let word = NSMenuItem(title: L("Use Microsoft Word for Word → PDF"), action: #selector(toggleWord), keyEquivalent: "")
+            word.target = self
+            word.state = WordAutomation.isEnabled ? .on : .off
+            word.toolTip = L("Word documents are turned into PDFs by Word itself, so they look exactly like printing from Word.")
+            menu.addItem(word)
+        }
+
         if FolderAccess.isSandboxed {
             menu.addItem(.separator())
             let folders = FolderAccess.shared.grantedFolders
@@ -179,6 +187,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func toggleEnabled() {
         monitor.isEnabled.toggle()
         UserDefaults.standard.set(monitor.isEnabled, forKey: Keys.enabled)
+    }
+
+    @objc private func toggleWord() {
+        WordAutomation.isEnabled.toggle()
     }
 
     @objc private func toggleLaunchAtLogin() {

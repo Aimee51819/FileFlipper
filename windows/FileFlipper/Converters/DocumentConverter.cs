@@ -47,6 +47,12 @@ public static class DocumentConverter
 
     public static string Convert(string path, DocumentTarget target)
     {
+        // PDF: let Microsoft Word do it when it's installed, so the result matches Word's own print.
+        if (target.Ext == "pdf" && WordAutomation.CanExport(path))
+        {
+            var pdf = OutputNaming.Next(path, "pdf");
+            if (WordAutomation.TryExportPdf(path, pdf)) return pdf;
+        }
         var document = Read(path);
         var output = OutputNaming.Next(path, target.Ext);
         Write(document, output, target);
