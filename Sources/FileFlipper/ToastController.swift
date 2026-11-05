@@ -72,7 +72,7 @@ final class ToastController {
         background.layer?.cornerRadius = 12
         background.layer?.masksToBounds = true
 
-        iconView.contentTintColor = NSColor(calibratedRed: 0.98, green: 0.45, blue: 0.15, alpha: 1)
+        iconView.contentTintColor = Palette.accent
         label.font = NSFont.systemFont(ofSize: 13, weight: .medium)
         label.textColor = .labelColor
         label.lineBreakMode = .byTruncatingMiddle

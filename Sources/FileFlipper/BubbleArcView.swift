@@ -129,7 +129,7 @@ final class BubbleArcView: NSView {
         shadow.shadowBlurRadius = isHovered ? 12 : 8
         shadow.shadowOffset = NSSize(width: 0, height: -3)
         shadow.set()
-        (isHovered ? Palette.orange : Palette.bubble).setFill()
+        (isHovered ? Palette.accent : Palette.bubble).setFill()
         circle.fill()
         NSGraphicsContext.current?.restoreGraphicsState()
 
@@ -140,7 +140,7 @@ final class BubbleArcView: NSView {
         }
 
         let iconColor = isHovered ? NSColor.white : Palette.icon
-        let textColor = isHovered ? NSColor.white : Palette.brown
+        let textColor = isHovered ? NSColor.white : Palette.ink
         let scale = isHovered ? hoverScale : 1
 
         // Label: shrink the font for longer words so it always fits inside the bubble.
@@ -190,13 +190,13 @@ final class BubbleArcView: NSView {
         paragraph.lineBreakMode = .byTruncatingMiddle
         let label = NSMutableAttributedString(string: text, attributes: [
             .font: NSFont.systemFont(ofSize: 11.5, weight: .medium),
-            .foregroundColor: Palette.brown,
+            .foregroundColor: Palette.ink,
             .paragraphStyle: paragraph,
         ])
         if !accent.isEmpty {
             label.append(NSAttributedString(string: "  " + accent, attributes: [
                 .font: NSFont.systemFont(ofSize: 9, weight: .heavy),
-                .foregroundColor: Palette.orange,
+                .foregroundColor: Palette.accent,
                 .kern: 0.8,
             ]))
         }

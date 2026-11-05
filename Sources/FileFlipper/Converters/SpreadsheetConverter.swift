@@ -260,7 +260,7 @@ enum SpreadsheetConverter {
                     var title = sheet.name
                     if chunks.count > 1 { title += "  (columns \(columnName(chunk.lowerBound))–\(columnName(chunk.upperBound - 1)))" }
                     NSAttributedString(string: title, attributes: [
-                        .font: NSFont.boldSystemFont(ofSize: 13), .foregroundColor: Palette.brown,
+                        .font: NSFont.boldSystemFont(ofSize: 13), .foregroundColor: Palette.ink,
                     ]).draw(at: NSPoint(x: margin, y: margin))
 
                     let last = min(body.count, first + rowsPerPage)
@@ -293,7 +293,7 @@ enum SpreadsheetConverter {
             let w = widths[column] * scale
             let cell = NSRect(x: x, y: y, width: w, height: h)
             if isHeader {
-                Palette.peach.withAlphaComponent(0.6).setFill(); cell.fill()
+                Palette.mint.withAlphaComponent(0.6).setFill(); cell.fill()
             } else if striped {
                 NSColor(white: 0.97, alpha: 1).setFill(); cell.fill()
             }

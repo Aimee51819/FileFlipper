@@ -47,7 +47,7 @@ enum CropWindow {
         }
 
         let sizeLabel = NSTextField(labelWithString: "")
-        sizeLabel.textColor = Palette.brown.withAlphaComponent(0.6)
+        sizeLabel.textColor = Palette.ink.withAlphaComponent(0.6)
         sizeLabel.font = .monospacedDigitSystemFont(ofSize: 12, weight: .medium)
         sizeLabel.frame = NSRect(x: x + 10, y: margin + (rowHeight - 16) / 2, width: 130, height: 16)
         content.addSubview(sizeLabel)
@@ -126,7 +126,7 @@ enum CropWindow {
     }
 }
 
-/// A capsule button in FileFlipper's colours: orange for the main action, translucent peach otherwise.
+/// A capsule button in FileFlipper's colours: green for the main action, translucent mint otherwise.
 private final class PillButton: NSButton {
     enum Style { case primary, secondary, choice }
 
@@ -170,14 +170,14 @@ private final class PillButton: NSButton {
         let pressed = isHighlighted
         switch style {
         case .primary:
-            return (Palette.orange.withAlphaComponent(pressed ? 0.75 : (isHovering ? 0.9 : 1)), .white)
+            return (Palette.accent.withAlphaComponent(pressed ? 0.75 : (isHovering ? 0.9 : 1)), .white)
         case .secondary:
-            return (Palette.peach.withAlphaComponent(pressed ? 0.95 : (isHovering ? 0.8 : 0.6)), Palette.brown)
+            return (Palette.mint.withAlphaComponent(pressed ? 0.95 : (isHovering ? 0.8 : 0.6)), Palette.ink)
         case .choice where isOn:
-            return (Palette.orange.withAlphaComponent(0.88), .white)
+            return (Palette.accent.withAlphaComponent(0.88), .white)
         case .choice:
-            return (Palette.peach.withAlphaComponent(pressed ? 0.85 : (isHovering ? 0.7 : 0.45)),
-                    Palette.brown.withAlphaComponent(0.85))
+            return (Palette.mint.withAlphaComponent(pressed ? 0.85 : (isHovering ? 0.7 : 0.45)),
+                    Palette.ink.withAlphaComponent(0.85))
         }
     }
 

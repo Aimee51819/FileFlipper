@@ -1,14 +1,22 @@
 import AppKit
 
-/// FileFlipper's colours, shared by the picker and the crop window.
+/// FileFlipper's colours (deep green + mint), shared by the picker, crop window and toast.
 enum Palette {
-    static let peach = NSColor(calibratedRed: 1.00, green: 0.88, blue: 0.76, alpha: 1)
-    static let orange = NSColor(calibratedRed: 0.98, green: 0.40, blue: 0.12, alpha: 1)
-    static let brown = NSColor(calibratedRed: 0.25, green: 0.15, blue: 0.10, alpha: 1)
-    static let cream = NSColor(calibratedRed: 1.00, green: 0.97, blue: 0.94, alpha: 1)
-    static let canvas = NSColor(calibratedRed: 0.17, green: 0.13, blue: 0.11, alpha: 1)
+    private static func hex(_ value: UInt32, _ alpha: CGFloat = 1) -> NSColor {
+        NSColor(srgbRed: CGFloat((value >> 16) & 0xFF) / 255, green: CGFloat((value >> 8) & 0xFF) / 255,
+                blue: CGFloat(value & 0xFF) / 255, alpha: alpha)
+    }
+
+    /// Main action / hover colour.
+    static let accent = hex(0x1F7A63)
+    /// Soft mint for secondary buttons and highlights.
+    static let mint = hex(0xD3EBDF)
+    /// Text colour: a deep green-black.
+    static let ink = hex(0x16332D)
+    static let cream = hex(0xF5F9F7)
+    static let canvas = hex(0x13221E)
     /// Picker bubbles.
-    static let bubble = NSColor(calibratedRed: 1.00, green: 0.96, blue: 0.92, alpha: 0.98)
-    static let bubbleBorder = NSColor(calibratedRed: 0.94, green: 0.80, blue: 0.68, alpha: 1)
-    static let icon = NSColor(calibratedRed: 0.79, green: 0.33, blue: 0.11, alpha: 1)
+    static let bubble = hex(0xF8FBF9, 0.98)
+    static let bubbleBorder = hex(0xC6DED2)
+    static let icon = hex(0x1F6B57)
 }
