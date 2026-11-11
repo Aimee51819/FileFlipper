@@ -8,8 +8,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: 1.6.2
-    CURRENT_PROJECT_VERSION: 12
+    MARKETING_VERSION: 1.7.0
+    CURRENT_PROJECT_VERSION: 13
     SWIFT_VERSION: "5.0"
 targets:
   FileFlipper:
