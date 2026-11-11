@@ -23,8 +23,14 @@ enum WordAutomation {
     }
 
     /// Asks Word to save `source` as a PDF at `output`. Returns false if anything goes wrong,
-    /// so the caller can fall back. Must run on the main thread (NSAppleScript).
+    /// so the caller can fall back.
     static func exportPDF(from source: URL, to output: URL) -> Bool {
+        exportQueue.sync { runExport(from: source, to: output) }
+    }
+
+    private static let exportQueue = DispatchQueue(label: "FileFlipper.WordExport")
+
+    private static func runExport(from source: URL, to output: URL) -> Bool {
         let wasRunning = !NSRunningApplication.runningApplications(withBundleIdentifier: bundleID).isEmpty
         func quoted(_ path: String) -> String {
             "\"" + path.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"") + "\""

@@ -21,8 +21,12 @@ enum FileKind: Equatable {
         let type = (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType
             ?? UTType(filenameExtension: url.pathExtension.lowercased())
         switch url.pathExtension.lowercased() {
-        case "pptx": self = .presentation; return
-        case "xlsx": self = .spreadsheet; return
+        case "pptx", "pptm", "ppsx": self = .presentation; return
+        case "ppt", "pps":
+            if PowerPointAutomation.canExport(url) { self = .presentation; return }
+        case "xlsx", "xlsm", "csv", "tsv": self = .spreadsheet; return
+        case "xls":
+            if ExcelAutomation.canExport(url) { self = .spreadsheet; return }
         default: break
         }
         guard let type else { self = .other; return }
@@ -103,30 +107,42 @@ enum Catalog {
                                    : target.ext == "pdf" && WordAutomation.extensions.contains(sourceExt)
                                        && WordAutomation.isEnabled && WordAutomation.isInstalled
                                    ? L("Made by Microsoft Word, like printing") : nil,
-                               runsOnMain: true, action: perFile(kind) { url in
+                               runsOnMain: !(target.ext == "pdf" && WordAutomation.extensions.contains(sourceExt)
+                                             && WordAutomation.isEnabled && WordAutomation.isInstalled),
+                               action: perFile(kind) { url in
                         try [DocumentConverter.convert(url, to: target)]
                     })
                 }
 
         case .presentation:
             return [
-                PickerItem(title: L("PDF"), detail: L("One page per slide"), runsOnMain: true, action: perFile(kind) { url in
+                PickerItem(title: L("PDF"),
+                           detail: PowerPointAutomation.isEnabled && PowerPointAutomation.isInstalled
+                               ? L("Made by Microsoft PowerPoint, like printing") : L("One page per slide"),
+                           runsOnMain: !(PowerPointAutomation.isEnabled && PowerPointAutomation.isInstalled),
+                           action: perFile(kind) { url in
                     try [PresentationConverter.toPDF(url)]
                 }),
+            ] + (sourceExt == "ppt" || sourceExt == "pps" ? [] : [
                 PickerItem(title: L("MD"), detail: L("Slide titles and text as Markdown"), action: perFile(kind) { url in
                     try [PresentationConverter.toMarkdown(url)]
                 }),
-            ]
+            ])
 
         case .spreadsheet:
             return [
-                PickerItem(title: L("PDF"), detail: L("Every sheet as a table"), runsOnMain: true, action: perFile(kind) { url in
+                PickerItem(title: L("PDF"),
+                           detail: ExcelAutomation.extensions.contains(sourceExt)
+                               && ExcelAutomation.isEnabled && ExcelAutomation.isInstalled
+                               ? L("Made by Microsoft Excel, like printing") : L("Every sheet as a table"),
+                           action: perFile(kind) { url in
                     try [SpreadsheetConverter.toPDF(url)]
                 }),
+            ] + (sourceExt == "xls" ? [] : [
                 PickerItem(title: L("MD"), detail: L("Every sheet as a Markdown table"), action: perFile(kind) { url in
                     try [SpreadsheetConverter.toMarkdown(url)]
                 }),
-            ]
+            ])
 
         case .video:
             return MediaConverter.videoTargets

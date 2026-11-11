@@ -109,5 +109,8 @@
 "Couldn't render the cutout" = "无法生成抠图";
 "%@ has no slides" = "%@ 里没有幻灯片";
 "Made by Microsoft Word, like printing" = "由 Microsoft Word 生成，和打印效果一样";
-"Use Microsoft Word for Word → PDF" = "Word 转 PDF 时使用 Microsoft Word";
-"Word documents are turned into PDFs by Word itself, so they look exactly like printing from Word." = "Word 文档会由 Word 自己转成 PDF，效果和在 Word 里打印完全一样。";
+"Use Microsoft Office for Word, PowerPoint and Excel → PDF" = "Word、PPT、Excel 转 PDF 时使用 Microsoft Office";
+"Made by Microsoft Excel, like printing" = "由 Microsoft Excel 生成，和打印效果一样";
+"Made by Microsoft PowerPoint, like printing" = "由 Microsoft PowerPoint 生成，和打印效果一样";
+"Word, PowerPoint and Excel files are turned into PDFs by Microsoft Office itself, so they look exactly like printing from Office." = "Word、PPT、Excel 文件会由 Microsoft Office 自己转成 PDF，效果和在 Office 里打印完全一样。";
+"%@ is too big for a PDF (%@ rows). Try MD instead." = "%@ 太大，不适合转 PDF（%@ 行）。可以试试转 MD。";

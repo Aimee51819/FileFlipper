@@ -13,10 +13,26 @@ enum SpreadsheetConverter {
     // MARK: Convert
 
     static func toPDF(_ url: URL) throws -> URL {
+        if ExcelAutomation.canExport(url) {
+            let output = OutputNaming.next(to: url, ext: "pdf")
+            if ExcelAutomation.exportPDF(from: url, to: output) { return output }
+        }
         let sheets = try read(url)
+        let cells = sheets.reduce(0) { $0 + $1.rows.count * ($1.rows.map(\.count).max() ?? 0) }
+        guard cells <= maxPDFCells else {
+            let rows = sheets.reduce(0) { $0 + $1.rows.count }
+            throw ConversionError.message(L("%@ is too big for a PDF (%@ rows). Try MD instead.",
+                                            url.lastPathComponent, rows.formatted()))
+        }
         let output = OutputNaming.next(to: url, ext: "pdf")
         try renderPDF(sheets, to: output)
         return output
+    }
+
+    static let maxPDFCells = 100_000
+
+    private static func clipped(_ text: String) -> String {
+        text.count > 200 ? String(text.prefix(200)) : text
     }
 
     static func toMarkdown(_ url: URL) throws -> URL {
@@ -34,7 +50,10 @@ enum SpreadsheetConverter {
 
     // MARK: Reading
 
+    static let delimitedExtensions: Set<String> = ["csv", "tsv"]
+
     static func read(_ url: URL) throws -> [Sheet] {
+        if delimitedExtensions.contains(url.pathExtension.lowercased()) { return try readDelimited(url) }
         let archive: ZipArchive
         do { archive = try ZipArchive(url: url) } catch { throw ConversionError.unreadable(url) }
         guard let workbook = OfficePackage.xml(archive, "xl/workbook.xml") else { throw ConversionError.unreadable(url) }
@@ -82,6 +101,62 @@ enum SpreadsheetConverter {
         }
         guard !sheets.isEmpty else { throw ConversionError.message(L("%@ has no data", url.lastPathComponent)) }
         return sheets
+    }
+
+    private static func readDelimited(_ url: URL) throws -> [Sheet] {
+        guard let data = try? Data(contentsOf: url) else { throw ConversionError.unreadable(url) }
+        let text = decode(data)
+        let separator: Character = url.pathExtension.lowercased() == "tsv" ? "\t" : ","
+
+        var rows: [[String]] = []
+        var row: [String] = []
+        var field = ""
+        var quoted = false
+        var characters = text.makeIterator()
+        var pending = characters.next()
+        while let character = pending {
+            pending = characters.next()
+            if quoted {
+                if character == "\"" {
+                    if pending == "\"" { field.append("\""); pending = characters.next() } else { quoted = false }
+                } else {
+                    field.append(character)
+                }
+            } else if character == "\"" && field.isEmpty {
+                quoted = true
+            } else if character == separator {
+                row.append(field); field = ""
+            } else if character == "\n" || character == "\r\n" || character == "\r" {
+                row.append(field); field = ""
+                rows.append(row); row = []
+            } else {
+                field.append(character)
+            }
+        }
+        if !field.isEmpty || !row.isEmpty { row.append(field); rows.append(row) }
+        rows.removeAll { $0.allSatisfy { $0.trimmingCharacters(in: .whitespaces).isEmpty } }
+        guard !rows.isEmpty else { throw ConversionError.message(L("%@ has no data", url.lastPathComponent)) }
+
+        let width = rows.map(\.count).max() ?? 0
+        rows = rows.map { $0 + Array(repeating: "", count: width - $0.count) }
+        var numeric = Set<Int>()
+        for column in 0..<width {
+            let values = rows.dropFirst().map { $0[column].trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+            let numbers = values.filter { Double($0.replacingOccurrences(of: ",", with: "")) != nil }
+            if !values.isEmpty, numbers.count * 2 > values.count { numeric.insert(column) }
+        }
+        return [Sheet(name: url.deletingPathExtension().lastPathComponent, rows: rows, numericColumns: numeric)]
+    }
+
+    private static func decode(_ data: Data) -> String {
+        if data.starts(with: [0xFF, 0xFE]) || data.starts(with: [0xFE, 0xFF]),
+           let text = String(data: data, encoding: .utf16) { return text }
+        if let text = String(data: data, encoding: .utf8) {
+            return text.hasPrefix("\u{FEFF}") ? String(text.dropFirst()) : text
+        }
+        let gb18030 = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)))
+        if let text = String(data: data, encoding: gb18030) { return text }
+        return String(data: data, encoding: .windowsCP1252) ?? String(decoding: data, as: UTF8.self)
     }
 
     private static func sharedStrings(_ archive: ZipArchive) -> [String] {
@@ -222,7 +297,7 @@ enum SpreadsheetConverter {
             for (rowIndex, row) in sheet.rows.enumerated() {
                 for (column, text) in row.enumerated() {
                     let font = rowIndex == 0 ? headerFont : bodyFont
-                    let width = ceil((text as NSString).size(withAttributes: [.font: font]).width) + padding * 2 + 6
+                    let width = ceil((clipped(text) as NSString).size(withAttributes: [.font: font]).width) + padding * 2 + 6
                     widths[column] = min(max(widths[column], width), 220)
                 }
             }
@@ -306,7 +381,7 @@ enum SpreadsheetConverter {
                 paragraph.lineBreakMode = .byTruncatingTail
                 paragraph.alignment = !isHeader && numeric.contains(column) ? .right : .left
                 let font = (isHeader ? headerFont : bodyFont).withSize(9 * scale)
-                let attributed = NSAttributedString(string: text.replacingOccurrences(of: "\n", with: " "), attributes: [
+                let attributed = NSAttributedString(string: clipped(text).replacingOccurrences(of: "\n", with: " "), attributes: [
                     .font: font, .foregroundColor: NSColor(white: 0.1, alpha: 1), .paragraphStyle: paragraph,
                 ])
                 let textHeight = font.ascender - font.descender

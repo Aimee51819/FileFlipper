@@ -76,10 +76,14 @@ enum DocumentConverter {
             let output = OutputNaming.next(to: url, ext: "pdf")
             if WordAutomation.exportPDF(from: url, to: output) { return output }
         }
-        let document = try readDocument(url)
-        let output = OutputNaming.next(to: url, ext: target.ext)
-        try write(document.text, to: output, target: target, page: document.page)
-        return output
+        func builtIn() throws -> URL {
+            let document = try readDocument(url)
+            let output = OutputNaming.next(to: url, ext: target.ext)
+            try write(document.text, to: output, target: target, page: document.page)
+            return output
+        }
+        if Thread.isMainThread { return try builtIn() }
+        return try DispatchQueue.main.sync { try builtIn() }
     }
 
     static func stripFormatting(_ url: URL) throws -> URL {

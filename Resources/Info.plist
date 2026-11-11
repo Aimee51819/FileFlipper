@@ -31,7 +31,7 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>FileFlipper asks Microsoft Word to save Word documents as PDF, so they look exactly like printing from Word.</string>
+	<string>FileFlipper asks Microsoft Word, PowerPoint and Excel to save files as PDF, so they look exactly like printing from Office.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>MIT License</string>
 </dict>

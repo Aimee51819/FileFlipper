@@ -139,11 +139,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         login.state = SMAppService.mainApp.status == .enabled ? .on : .off
         menu.addItem(login)
 
-        if WordAutomation.isInstalled {
-            let word = NSMenuItem(title: L("Use Microsoft Word for Word → PDF"), action: #selector(toggleWord), keyEquivalent: "")
+        if WordAutomation.isInstalled || PowerPointAutomation.isInstalled || ExcelAutomation.isInstalled {
+            let word = NSMenuItem(title: L("Use Microsoft Office for Word, PowerPoint and Excel → PDF"), action: #selector(toggleWord), keyEquivalent: "")
             word.target = self
             word.state = WordAutomation.isEnabled ? .on : .off
-            word.toolTip = L("Word documents are turned into PDFs by Word itself, so they look exactly like printing from Word.")
+            word.toolTip = L("Word, PowerPoint and Excel files are turned into PDFs by Microsoft Office itself, so they look exactly like printing from Office.")
             menu.addItem(word)
         }
 

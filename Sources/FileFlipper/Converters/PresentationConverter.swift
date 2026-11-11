@@ -57,6 +57,15 @@ enum PresentationConverter {
     // MARK: Convert
 
     static func toPDF(_ url: URL) throws -> URL {
+        if PowerPointAutomation.canExport(url) {
+            let output = OutputNaming.next(to: url, ext: "pdf")
+            if PowerPointAutomation.exportPDF(from: url, to: output) { return output }
+        }
+        if Thread.isMainThread { return try renderPDF(url) }
+        return try DispatchQueue.main.sync { try renderPDF(url) }
+    }
+
+    private static func renderPDF(_ url: URL) throws -> URL {
         let deck = try read(url)
         let output = OutputNaming.next(to: url, ext: "pdf")
         var mediaBox = CGRect(origin: .zero, size: deck.size)
@@ -429,7 +438,7 @@ enum PresentationConverter {
                     case "r", "fld":
                         let rPr = node.child("rPr")
                         let size = (rPr?.attr("sz").flatMap(Double.init).map { CGFloat($0) / 100 } ?? baseSize) * fontScale
-                        var run = Run(text: node.child("t")?.stringValue ?? "", size: size, color: textColor)
+                        var run = Run(text: node.child("t")?.stringValue?.restoringSpaces ?? "", size: size, color: textColor)
                         run.bold = rPr?.attr("b") == "1" || (rPr?.attr("b") == nil && levelStyles.contains { $0.child("defRPr")?.attr("b") == "1" })
                         run.italic = rPr?.attr("i") == "1"
                         run.underline = (rPr?.attr("u")).map { $0 != "none" } ?? false
@@ -621,17 +630,22 @@ enum PresentationConverter {
 
     private static func attributed(_ box: TextBox) -> NSAttributedString {
         let result = NSMutableAttributedString()
-        var number = 0
+        var counters: [Int: Int] = [:]   // auto-number counter per list level
         for (index, paragraph) in box.paragraphs.enumerated() {
             let style = NSMutableParagraphStyle()
             style.alignment = paragraph.alignment
             style.lineHeightMultiple = 0.95
+            style.defaultTabInterval = 36
             style.paragraphSpacingBefore = index == 0 ? 0 : (paragraph.runs.first?.size ?? paragraph.emptySize) * 0.25
             let indent = CGFloat(paragraph.level) * 24
             let size = paragraph.runs.first?.size ?? paragraph.emptySize
             if let bullet = paragraph.bullet {
-                number += 1
-                let marker = bullet == "#" ? "\(number)." : bullet
+                counters = counters.filter { $0.key <= paragraph.level }
+                var marker = bullet
+                if bullet == "#" {
+                    counters[paragraph.level, default: 0] += 1
+                    marker = "\(counters[paragraph.level] ?? 1)."
+                }
                 let markerWidth = size * 1.0
                 style.firstLineHeadIndent = indent
                 style.headIndent = indent + markerWidth
@@ -643,12 +657,16 @@ enum PresentationConverter {
             } else {
                 style.firstLineHeadIndent = indent
                 style.headIndent = indent
-                number = 0
+                counters = [:]
             }
             if paragraph.runs.isEmpty {
                 result.append(NSAttributedString(string: " ", attributes: [.font: NSFont.systemFont(ofSize: paragraph.emptySize), .paragraphStyle: style]))
             }
-            for run in paragraph.runs {
+            var atStart = true
+            for var run in paragraph.runs {
+                if atStart && paragraph.bullet != nil { run.text = String(run.text.drop { $0 == "\t" }) }
+                if run.text.isEmpty { continue }
+                atStart = false
                 var font = run.typeface.flatMap { NSFont(name: $0, size: run.size) } ?? NSFont.systemFont(ofSize: run.size)
                 if run.bold { font = NSFontManager.shared.convert(font, toHaveTrait: .boldFontMask) }
                 if run.italic { font = NSFontManager.shared.convert(font, toHaveTrait: .italicFontMask) }

@@ -143,10 +143,21 @@ extension XMLElement {
     }
 }
 
+let spacePlaceholder = "\u{E000}"
+
+extension String {
+    var restoringSpaces: String { replacingOccurrences(of: spacePlaceholder, with: "") }
+}
+
 enum OfficePackage {
     static func xml(_ archive: ZipArchive, _ path: String) -> XMLElement? {
-        guard let data = archive.data(at: path),
-              let document = try? XMLDocument(data: data, options: []) else { return nil }
+        guard var data = archive.data(at: path) else { return nil }
+        if path.hasPrefix("ppt/"), var text = String(data: data, encoding: .utf8) {
+            text = text.replacingOccurrences(of: "(<a:t(?:\\s[^>]*)?>)([ \\t]+)(</a:t>)",
+                                             with: "$1\(spacePlaceholder)$2$3", options: .regularExpression)
+            data = Data(text.utf8)
+        }
+        guard let document = try? XMLDocument(data: data, options: []) else { return nil }
         return document.rootElement()
     }
 
