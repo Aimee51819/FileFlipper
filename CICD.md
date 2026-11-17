@@ -174,7 +174,7 @@ reviewers** and add yourself:
 
 - `production`: publishing a GitHub release, and rollback. Under *Deployment branches and tags*,
   allow `main` and tags `v*`.
-- `app-store`: uploading to App Store Connect. Allow tags `v*`.
+- `app-store`: uploading to App Store Connect. Allow `main` (the workflow is run from there) and tags `v*`.
 
 To let Prepare release open the PR itself, tick **Settings › Actions › General › Allow GitHub Actions
 to create and approve pull requests**. This is optional; otherwise you open the PR from the link the
