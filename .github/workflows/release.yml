@@ -1,76 +1,150 @@
-# Push a tag like v1.6.0 to build the Mac and Windows apps and publish them as a GitHub release.
-# The website's download buttons point at the latest release:
+# Release: builds, tests and packages the Mac and Windows apps, stages them as a DRAFT GitHub release,
+# and publishes only after a maintainer approves the `production` environment. Publishing makes it the
+# "latest" release (what the website's download buttons point at) and mirrors it to Cloudflare.
+#
+#   Push a tag vX.Y.Z           → full release (stops at the approval gate)
+#   Run by hand, no tag         → dry run: build, test and package only, nothing is released
+#   Run by hand with a tag      → creates that tag on the chosen branch, then a full release
+#
+# The tag must match project.yml (use the "Prepare release" workflow or ./scripts/version.sh bump).
+# The website download links:
 #   https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper.zip                    (Mac)
 #   https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows-Setup.exe      (Windows)
 #   https://github.com/Aimee51819/FileFlipper/releases/latest/download/FileFlipper-Windows.zip            (Windows, portable)
+# Architecture, secrets and rollback: see CICD.md.
 name: Release
 
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to create and release (e.g. v1.8.0). Leave empty for a dry run that releases nothing."
+        type: string
+        default: ""
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
-  mac:
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build (sandboxed, ad-hoc signed)
-        run: ./scripts/build-app.sh
-      - name: Package
-        run: cd build && ditto -c -k --keepParent FileFlipper.app FileFlipper.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mac
-          path: build/FileFlipper.zip
-
-  windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Install Inno Setup
-        shell: pwsh
-        run: |
-          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
-            choco install innosetup --yes --no-progress
-          }
-      - name: Build and package
-        shell: pwsh
-        run: |
-          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.TrimStart('v') } else { '' }
-          ./windows/build.ps1 -Package -Version $version
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows
-          path: |
-            build/windows/FileFlipper-Windows-Setup.exe
-            build/windows/FileFlipper-Windows.zip
-
-  release:
-    needs: [mac, windows]
-    if: startsWith(github.ref, 'refs/tags/')
+  prepare:
+    name: Check version
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+      release: ${{ steps.tag.outputs.release }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then tag="$GITHUB_REF_NAME"; else tag="$INPUT_TAG"; fi
+          if [ -n "$tag" ]; then
+            [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::Tag '$tag' is not vX.Y.Z"; exit 1; }
+            ./scripts/version.sh check "$tag"
+            ./scripts/ci/require-approval-gate.sh production
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          else
+            ./scripts/version.sh check
+            echo "::notice::Dry run: building and packaging only. Nothing will be released."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          fi
+          version=$(./scripts/version.sh show | cut -d' ' -f1)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build
+    needs: prepare
+    uses: ./.github/workflows/ci.yml
+    with:
+      sign: ${{ needs.prepare.outputs.release == 'true' }}
+      version: ${{ needs.prepare.outputs.version }}
+    secrets: inherit
+
+  draft:
+    name: Stage draft release
+    needs: [prepare, build]
+    if: needs.prepare.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.prepare.outputs.tag }}
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: dist
           merge-multiple: true
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/FileFlipper.zip
-            dist/FileFlipper-Windows-Setup.exe
-            dist/FileFlipper-Windows.zip
-          generate_release_notes: true
+
+      - name: Checksums
+        run: |
+          cd dist
+          sha256sum FileFlipper.zip FileFlipper-Windows-Setup.exe FileFlipper-Windows.zip | tee SHA256SUMS.txt
+
+      - name: Create the tag (manual runs)
+        if: github.ref_type != 'tag'
+        run: |
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists"
+          else
+            gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA"
+          fi
+
+      - name: Create or update the draft release
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null | grep -q false; then
+            echo "::error::$TAG is already published. Bump the version for a new release, or use the Rollback workflow."
+            exit 1
+          fi
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" dist/* --draft --verify-tag --generate-notes --title "FileFlipper ${TAG#v}" --repo "$GITHUB_REPOSITORY"
+          fi
+          url=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url --jq .url)
+          {
+            echo "### Draft release staged: $TAG"
+            echo "Review the files and notes at $url, then approve the **production** deployment on this run to publish."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    name: Publish (needs approval)
+    needs: [prepare, draft]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Required reviewers on this environment are the manual gate. See CICD.md › One-time setup.
+    environment:
+      name: production
+      url: https://github.com/${{ github.repository }}/releases/tag/${{ needs.prepare.outputs.tag }}
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.prepare.outputs.tag }}
+    steps:
+      - name: Publish the release and mark it latest
+        run: |
+          gh release edit "$TAG" --draft=false --latest --repo "$GITHUB_REPOSITORY"
+          echo "Published $(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url --jq .url)" | tee -a "$GITHUB_STEP_SUMMARY"
 
   # Mirror the release to Cloudflare so it can be downloaded from mainland China.
   cloudflare:
-    needs: release
+    needs: publish
     uses: ./.github/workflows/cloudflare.yml
     secrets: inherit

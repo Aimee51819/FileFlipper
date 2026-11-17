@@ -16,7 +16,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <StartupObject>FileFlipper.Program</StartupObject>
 
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
     <Product>FileFlipper</Product>
     <Company>Aimee Sun</Company>
     <Copyright>Copyright © 2026 Aimee Sun. MIT License.</Copyright>

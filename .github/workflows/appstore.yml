@@ -1,0 +1,122 @@
+# Mac App Store: archives the sandboxed app with Apple's cloud-managed signing, exports the .pkg, and
+# (after a maintainer approves the `app-store` environment) uploads it to App Store Connect.
+# Submitting the uploaded build for review stays a manual step in App Store Connect. See CICD.md.
+#
+# Needs: secrets APP_STORE_CONNECT_API_KEY_P8 (base64 of the .p8, Admin role for cloud signing),
+# APP_STORE_CONNECT_KEY_ID, APP_STORE_CONNECT_ISSUER_ID; repository variable APPLE_TEAM_ID.
+name: App Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Tag to build (e.g. v1.8.0). Must be a released version."
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: appstore
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  APP_STORE_CONNECT_API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8 }}
+  APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+  APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+  APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+
+jobs:
+  archive:
+    name: Archive and export .pkg
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Check inputs, secrets and the approval gate
+        env:
+          REF: ${{ inputs.ref }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::ref must be a vX.Y.Z tag"; exit 1; }
+          ./scripts/version.sh check "$REF"
+          ./scripts/ci/require-approval-gate.sh app-store
+          for name in APP_STORE_CONNECT_API_KEY_P8 APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID APPLE_TEAM_ID; do
+            [ -n "${!name}" ] || { echo "::error::Set $name (see CICD.md › Secrets)"; exit 1; }
+          done
+
+      - name: Regression tests
+        run: swift test --parallel
+
+      - name: Archive
+        run: |
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_P8" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
+          xcodebuild archive -project FileFlipper.xcodeproj -scheme FileFlipper -configuration Release \
+            -archivePath "$RUNNER_TEMP/FileFlipper.xcarchive" -destination 'generic/platform=macOS' \
+            -allowProvisioningUpdates -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID" -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic | tail -40
+
+      - name: Export for App Store Connect
+        run: |
+          /usr/libexec/PlistBuddy -c "Add :method string app-store-connect" \
+            -c "Add :destination string export" -c "Add :teamID string $APPLE_TEAM_ID" \
+            -c "Add :signingStyle string automatic" "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/FileFlipper.xcarchive" \
+            -exportPath build/appstore -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -allowProvisioningUpdates -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID" -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
+          ls -l build/appstore
+          pkgutil --check-signature build/appstore/FileFlipper.pkg
+
+      - name: Remove signing material
+        if: always()
+        run: ./scripts/ci/cleanup-signing.sh
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: appstore-pkg
+          path: build/appstore/FileFlipper.pkg
+          if-no-files-found: error
+
+  upload:
+    name: Upload to App Store Connect (needs approval)
+    needs: archive
+    runs-on: macos-15
+    timeout-minutes: 30
+    # Required reviewers on this environment are the manual gate before anything reaches Apple.
+    environment:
+      name: app-store
+      url: https://appstoreconnect.apple.com/apps/6818597213/distribution
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: scripts
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: appstore-pkg
+          path: dist
+
+      - name: Upload
+        run: |
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_P8" | base64 --decode > "$HOME/.appstoreconnect/private_keys/AuthKey_$APP_STORE_CONNECT_KEY_ID.p8"
+          xcrun altool --upload-app --type macos --file dist/FileFlipper.pkg \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+          {
+            echo "### Uploaded ${{ inputs.ref }} to App Store Connect"
+            echo "Apple processes the build in 5–30 minutes. Then add it to the version and submit it for review in App Store Connect (manual)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove signing material
+        if: always()
+        run: ./scripts/ci/cleanup-signing.sh

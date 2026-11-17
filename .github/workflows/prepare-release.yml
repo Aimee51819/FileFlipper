@@ -1,0 +1,79 @@
+# Prepare release: bumps the version everywhere, raises the build number, and opens a pull request
+# (branch release/vX.Y.Z) with draft release notes. Nothing is tagged or published.
+# After merging, push the tag (git tag vX.Y.Z && git push origin vX.Y.Z) or run "Release" with the tag.
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "patch, minor, major, or an exact version like 1.8.0"
+        required: true
+        default: minor
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BUMP: ${{ inputs.bump }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Bump the version
+        id: bump
+        run: |
+          [ "$GITHUB_REF_NAME" = main ] || { echo "::error::Run this from main"; exit 1; }
+          ./scripts/version.sh check
+          ./scripts/version.sh bump "$BUMP"
+          version=$(./scripts/version.sh show | cut -d' ' -f1)
+          tag="v$version"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "::error::Tag $tag already exists"; exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Push release branch
+        env:
+          TAG: ${{ steps.bump.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "release/$TAG"
+          git commit -am "Version ${TAG#v}"
+          git push --force-with-lease origin "release/$TAG"
+
+      - name: Open the pull request
+        env:
+          TAG: ${{ steps.bump.outputs.tag }}
+        run: |
+          previous=$(git describe --tags --abbrev=0 --match 'v*' HEAD~1 2>/dev/null || true)
+          notes=$(gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" -f tag_name="$TAG" \
+                    -f target_commitish="release/$TAG" ${previous:+-f previous_tag_name="$previous"} --jq .body)
+          body=$(printf '%s\n\n%s\n\n%s\n' \
+            "Bumps FileFlipper to **${TAG#v}** (build $(./scripts/version.sh show | sed 's/.*build \([0-9]*\).*/\1/'))." \
+            "After merging: \`git tag $TAG && git push origin $TAG\` (or run **Release** with tag \`$TAG\`). The release stays a draft until the **production** environment is approved." \
+            "### Draft release notes"$'\n'"$notes")
+          if gh pr create --base main --head "release/$TAG" --title "Version ${TAG#v}" --body "$body"; then
+            echo "Opened a pull request for $TAG" >> "$GITHUB_STEP_SUMMARY"
+          else
+            # Needs Settings › Actions › "Allow GitHub Actions to create and approve pull requests".
+            echo "::warning::Could not open the pull request (Actions may not be allowed to create PRs). Open it yourself:"
+            echo "https://github.com/$GITHUB_REPOSITORY/compare/main...release/$TAG?expand=1" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+          # Pushes made with GITHUB_TOKEN don't trigger workflows, so start CI on the branch explicitly.
+          gh workflow run ci.yml --ref "release/$TAG"

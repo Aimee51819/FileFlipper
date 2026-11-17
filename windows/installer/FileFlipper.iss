@@ -1,9 +1,9 @@
 ; Inno Setup script for FileFlipper for Windows.
-; Build:  iscc /DAppVersion=1.6.0 /DSourceExe=..\..\build\windows\FileFlipper.exe FileFlipper.iss
+; Build:  iscc /DAppVersion=1.7.0 /DSourceExe=..\..\build\windows\FileFlipper.exe FileFlipper.iss
 ; Installs per user (no administrator prompt) into %LOCALAPPDATA%\Programs\FileFlipper.
 
 #ifndef AppVersion
-  #define AppVersion "1.6.0"
+  #define AppVersion "1.7.0"
 #endif
 #ifndef SourceExe
   #define SourceExe "..\..\build\windows\FileFlipper.exe"

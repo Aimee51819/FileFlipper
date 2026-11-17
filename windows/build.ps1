@@ -3,11 +3,13 @@
 #   .\windows\build.ps1                     # FileFlipper.exe (one self-contained file, no .NET install needed)
 #   .\windows\build.ps1 -Package            # also FileFlipper-Windows.zip and, if Inno Setup is installed, FileFlipper-Windows-Setup.exe
 #   .\windows\build.ps1 -Version 1.6.1      # set the version shown in About and in the installer
+#   .\windows\build.ps1 -Package -NoBuild   # package an existing FileFlipper.exe (CI signs it in between)
 #
 # Needs the .NET 8 SDK (https://dotnet.microsoft.com/download). The installer needs Inno Setup 6 (https://jrsoftware.org/isdl.php).
 param(
     [string]$Version = "",
-    [switch]$Package
+    [switch]$Package,
+    [switch]$NoBuild
 )
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
@@ -20,13 +22,18 @@ if (-not $Version) {
 Write-Host "Building FileFlipper $Version for Windows..."
 
 New-Item -ItemType Directory -Force $out | Out-Null
-# Not compressed inside the .exe: compressed single-file apps unpack into memory and use twice the RAM.
-# The zip and the installer compress it anyway.
-dotnet publish $project -c Release -r win-x64 --self-contained true `
-    -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none `
-    -p:Version=$Version -o $out --nologo
-if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
-Write-Host "Built $out\FileFlipper.exe"
+if ($NoBuild) {
+    if (-not (Test-Path (Join-Path $out "FileFlipper.exe"))) { throw "-NoBuild: $out\FileFlipper.exe does not exist" }
+    Write-Host "Using the existing $out\FileFlipper.exe"
+} else {
+    # Not compressed inside the .exe: compressed single-file apps unpack into memory and use twice the RAM.
+    # The zip and the installer compress it anyway.
+    dotnet publish $project -c Release -r win-x64 --self-contained true `
+        -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none `
+        -p:Version=$Version -o $out --nologo
+    if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
+    Write-Host "Built $out\FileFlipper.exe"
+}
 
 if ($Package) {
     $zip = Join-Path $out "FileFlipper-Windows.zip"

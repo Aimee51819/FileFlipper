@@ -8,6 +8,12 @@ let package = Package(
         .executableTarget(
             name: "FileFlipper",
             path: "Sources/FileFlipper"
-        )
+        ),
+        // Regression tests for the conversion logic. Run with `swift test` (CI runs them on every push).
+        .testTarget(
+            name: "FileFlipperTests",
+            dependencies: ["FileFlipper"],
+            path: "Tests/FileFlipperTests"
+        ),
     ]
 )

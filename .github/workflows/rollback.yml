@@ -1,0 +1,83 @@
+# Rollback: points "latest" (the website's download buttons and dl.fileflipper.app) back at a known-good
+# release. The bad release is turned into a pre-release, not deleted, so nothing is lost and it can be
+# restored by running this again with its tag. Needs approval of the `production` environment.
+# The Mac App Store cannot be rolled back this way; see CICD.md › Rollback.
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      good_tag:
+        description: "Release to make latest again (e.g. v1.7.0)"
+        required: true
+        type: string
+      bad_tag:
+        description: "Release to pull back to pre-release (optional, e.g. v1.8.0)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-rollback
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  gate:
+    name: Check approval gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: scripts
+      - run: ./scripts/ci/require-approval-gate.sh production
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  rollback:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GOOD: ${{ inputs.good_tag }}
+      BAD: ${{ inputs.bad_tag }}
+    steps:
+      - name: Check the releases
+        run: |
+          for tag in "$GOOD" ${BAD:+"$BAD"}; do
+            [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::'$tag' is not vX.Y.Z"; exit 1; }
+          done
+          [ "$GOOD" != "$BAD" ] || { echo "::error::good_tag and bad_tag are the same"; exit 1; }
+          gh release view "$GOOD" --repo "$GITHUB_REPOSITORY" --json isDraft,assets \
+            --jq 'if .isDraft then error("draft") else (.assets | map(.name)) end' > assets.json
+          for file in FileFlipper.zip FileFlipper-Windows-Setup.exe FileFlipper-Windows.zip; do
+            grep -q "\"$file\"" assets.json || { echo "::error::$GOOD has no $file"; exit 1; }
+          done
+          echo "Latest before rollback: $(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+
+      - name: Pull back the bad release
+        if: inputs.bad_tag != ''
+        run: gh release edit "$BAD" --prerelease --latest=false --repo "$GITHUB_REPOSITORY"
+
+      - name: Make the good release latest
+        run: |
+          gh release edit "$GOOD" --prerelease=false --latest --repo "$GITHUB_REPOSITORY"
+          now=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)
+          [ "$now" = "$GOOD" ] || { echo "::error::Latest is $now, expected $GOOD"; exit 1; }
+          echo "Rolled back: latest is now $GOOD${BAD:+ ($BAD is a pre-release)}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # Re-mirror so dl.fileflipper.app serves the good release too.
+  cloudflare:
+    needs: rollback
+    uses: ./.github/workflows/cloudflare.yml
+    secrets: inherit

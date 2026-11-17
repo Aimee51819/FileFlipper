@@ -47,6 +47,8 @@ App Store Connect 里的 App 记录已经建好了：
 4. 等 **5–30 分钟**，苹果处理完后会给你发邮件，构建版本会出现在 App Store Connect 里。
 
 > 以后每次重新上传，`project.yml` 里的 `CURRENT_PROJECT_VERSION`（构建号）都必须比上一次大，否则会被拒收。告诉我一声，我帮你改。
+>
+> 也可以用 GitHub Actions 自动打包上传（需审批）：`./scripts/version.sh bump patch` 会自动把构建号加 1，详见 [CICD.md](CICD.md) 的 “Mac App Store” 一节。
 
 ---
 

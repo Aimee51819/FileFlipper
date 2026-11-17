@@ -1,0 +1,66 @@
+# Build failure notifications. When CI on main, a release, the Cloudflare deploy, an App Store upload or
+# a rollback fails, this opens (or comments on) one GitHub issue per workflow labelled `ci-failure`, which
+# notifies repository watchers by email/mobile. The issue closes itself when that workflow next succeeds.
+# Optional: set the NOTIFY_WEBHOOK_URL secret (Slack or Discord incoming webhook) for a chat message.
+# workflow_run only fires for workflow files on the default branch, so this works once merged to main.
+name: Notify
+
+on:
+  workflow_run:
+    workflows: [CI, Release, Cloudflare, App Store, Rollback, Prepare release]
+    types: [completed]
+
+permissions:
+  issues: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  notify:
+    # Pull requests report on the PR itself; only main, tags and manual runs open issues.
+    if: >-
+      github.event.workflow_run.event != 'pull_request' &&
+      (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.event != 'push' ||
+       startsWith(github.event.workflow_run.head_branch, 'v'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      WORKFLOW: ${{ github.event.workflow_run.name }}
+      CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+      RUN_URL: ${{ github.event.workflow_run.html_url }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+      ACTOR: ${{ github.event.workflow_run.actor.login }}
+      WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK_URL }}
+    steps:
+      - name: Open, update or close the failure issue
+        run: |
+          title="CI failure: $WORKFLOW"
+          existing=$(gh issue list --label ci-failure --state open --search "in:title \"$title\"" --json number,title \
+                       --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+          if [ "$CONCLUSION" = failure ] || [ "$CONCLUSION" = timed_out ]; then
+            gh label create ci-failure --color B60205 --description "Automated: a workflow failed" 2>/dev/null || true
+            body="**$WORKFLOW** $CONCLUSION on \`$BRANCH\` (${SHA:0:7}), started by $ACTOR.
+
+          Run: $RUN_URL
+
+          If a release went out broken, see CICD.md › Rollback."
+            if [ -n "$existing" ]; then
+              gh issue comment "$existing" --body "$body"
+            else
+              gh issue create --title "$title" --label ci-failure --body "$body"
+            fi
+            if [ -n "$WEBHOOK" ]; then
+              text="FileFlipper: $WORKFLOW $CONCLUSION on $BRANCH — $RUN_URL"
+              # "text" is read by Slack and Mattermost, "content" by Discord.
+              payload=$(jq -n --arg t "$text" '{text: $t, content: $t}')
+              curl -fsS -X POST -H 'Content-Type: application/json' --data "$payload" "$WEBHOOK" >/dev/null ||
+                echo "::warning::The webhook did not accept the message"
+            fi
+          elif [ "$CONCLUSION" = success ] && [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Fixed: **$WORKFLOW** passed on \`$BRANCH\` (${SHA:0:7}). $RUN_URL"
+          fi

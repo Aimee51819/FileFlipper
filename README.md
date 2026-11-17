@@ -576,7 +576,7 @@ windows/installer/FileFlipper.iss   Inno Setup script (per-user install)
 
 How the drag works on Windows: there is no system-wide drag pasteboard like on macOS, so a 30 Hz timer watches the mouse button and Shift. When a Shift-drag starts, an almost-transparent window is placed under the pointer; when the drag enters it, Windows hands over the dragged files (OLE drag and drop), and the bubbles fade in. Leaving the window hides it, so normal drags keep working.
 
-**Releases:** push a tag such as `v1.6.0` and `.github/workflows/release.yml` builds the Mac zip, the Windows installer and the portable zip and attaches them to a GitHub release. The website (`docs/index.html`, GitHub Pages) always links to the latest release.
+**Releases:** run *Prepare release* (or `./scripts/version.sh bump minor`), merge the PR, and push a tag such as `v1.8.0`. `.github/workflows/release.yml` tests and builds the Mac zip, the Windows installer and the portable zip, stages them as a draft GitHub release, and publishes it once you approve. The website (`docs/index.html`, GitHub Pages) always links to the latest release. CI, signing, App Store uploads and rollback are documented in [CICD.md](CICD.md).
 
 ### Mac
 
