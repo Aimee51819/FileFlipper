@@ -57,12 +57,12 @@ enum Catalog {
         if tools {
             return toolItems(kind: kind, count: urls.filter { FileKind(url: $0) == kind }.count)
         }
-        return formatItems(kind: kind, sourceExt: sourceExt)
+        return formatItems(kind: kind, sourceExt: sourceExt, source: first)
     }
 
     // MARK: Formats (Shift)
 
-    private static func formatItems(kind: FileKind, sourceExt: String) -> [PickerItem] {
+    private static func formatItems(kind: FileKind, sourceExt: String, source: URL) -> [PickerItem] {
         switch kind {
         case .image:
             var items = ImageConverter.targets
@@ -99,20 +99,55 @@ enum Catalog {
             return items
 
         case .document:
-            return DocumentConverter.targets
-                .filter { !$0.matches(ext: sourceExt) }
-                .map { target in
-                    PickerItem(title: target.title,
-                               detail: target.ext == "md" ? L("Markdown, ready for AI")
-                                   : target.ext == "pdf" && WordAutomation.extensions.contains(sourceExt)
-                                       && WordAutomation.isEnabled && WordAutomation.isInstalled
-                                   ? L("Made by Microsoft Word, like printing") : nil,
-                               runsOnMain: !(target.ext == "pdf" && WordAutomation.extensions.contains(sourceExt)
-                                             && WordAutomation.isEnabled && WordAutomation.isInstalled),
-                               action: perFile(kind) { url in
+            let targets = DocumentConverter.targets.filter { !$0.matches(ext: sourceExt) }
+            var items: [PickerItem] = []
+
+            if let pdf = targets.first(where: { $0.ext == "pdf" }) {
+                let wordAvailable = WordAutomation.isInstalled && WordAutomation.supports(source)
+                let pagesAvailable = PagesAutomation.isInstalled && PagesAutomation.supports(source)
+                let autoUsesWord = WordAutomation.canExport(source)
+                let autoUsesPages = !autoUsesWord && PagesAutomation.canExport(source)
+
+                items.append(PickerItem(title: pdf.title,
+                    detail: autoUsesWord ? L("Made by Microsoft Word, like printing")
+                        : autoUsesPages ? L("Made by Apple Pages, like printing")
+                        : L("Best available PDF converter, chosen automatically"),
+                    runsOnMain: !(autoUsesWord || autoUsesPages),
+                    action: perFile(kind) { url in
+                        try [DocumentConverter.convert(url, to: pdf, pdfEngine: .automatic)]
+                    }))
+
+                if wordAvailable {
+                    items.append(PickerItem(title: L("Word"), symbol: "doc.richtext",
+                        detail: L("Export PDF using Microsoft Word"),
+                        action: perFile(kind) { url in
+                            try [DocumentConverter.convert(url, to: pdf, pdfEngine: .microsoftWord)]
+                        }))
+                }
+                if pagesAvailable {
+                    items.append(PickerItem(title: L("Pages"), symbol: "doc.text",
+                        detail: L("Export PDF using Apple Pages"),
+                        action: perFile(kind) { url in
+                            try [DocumentConverter.convert(url, to: pdf, pdfEngine: .applePages)]
+                        }))
+                }
+                if wordAvailable || pagesAvailable {
+                    items.append(PickerItem(title: L("System"), symbol: "doc.plaintext",
+                        detail: L("Use the built-in text layout; formatting may differ"), runsOnMain: true,
+                        action: perFile(kind) { url in
+                            try [DocumentConverter.convert(url, to: pdf, pdfEngine: .builtIn)]
+                        }))
+                }
+            }
+
+            items += targets.filter { $0.ext != "pdf" }.map { target in
+                PickerItem(title: target.title,
+                    detail: target.ext == "md" ? L("Markdown, ready for AI") : nil,
+                    action: perFile(kind) { url in
                         try [DocumentConverter.convert(url, to: target)]
                     })
-                }
+            }
+            return items
 
         case .presentation:
             return [
