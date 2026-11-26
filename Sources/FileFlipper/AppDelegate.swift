@@ -147,6 +147,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             menu.addItem(word)
         }
 
+        if PagesAutomation.isInstalled {
+            let pages = NSMenuItem(title: L("Use Apple Pages for Word → PDF"), action: #selector(togglePages), keyEquivalent: "")
+            pages.target = self
+            pages.state = PagesAutomation.isEnabled ? .on : .off
+            pages.toolTip = L("Word documents can be exported by Apple Pages, which may preserve their layout better than the built-in converter.")
+            menu.addItem(pages)
+        }
+
         if FolderAccess.isSandboxed {
             menu.addItem(.separator())
             let folders = FolderAccess.shared.grantedFolders
@@ -191,6 +199,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func toggleWord() {
         WordAutomation.isEnabled.toggle()
+    }
+
+    @objc private func togglePages() {
+        PagesAutomation.isEnabled.toggle()
     }
 
     @objc private func toggleLaunchAtLogin() {

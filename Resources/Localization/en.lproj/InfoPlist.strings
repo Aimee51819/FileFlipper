@@ -1,1 +1,1 @@
-"NSAppleEventsUsageDescription" = "FileFlipper asks Microsoft Word, PowerPoint and Excel to save files as PDF, so they look exactly like printing from Office.";
+"NSAppleEventsUsageDescription" = "FileFlipper can ask Microsoft Office or Apple Pages to export documents as PDF using their layout engines.";

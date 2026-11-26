@@ -9,6 +9,13 @@ struct DocumentTarget: FormatTarget {
     var aliases: [String] = []
 }
 
+enum DocumentPDFEngine {
+    case automatic
+    case microsoftWord
+    case applePages
+    case builtIn
+}
+
 /// Text document conversions, using the same Cocoa text system as TextEdit.
 /// Must run on the main thread (HTML import and printing require it).
 enum DocumentConverter {
@@ -63,7 +70,8 @@ enum DocumentConverter {
         try readDocument(url).text
     }
 
-    static func convert(_ url: URL, to target: DocumentTarget) throws -> URL {
+    static func convert(_ url: URL, to target: DocumentTarget,
+                        pdfEngine: DocumentPDFEngine = .automatic) throws -> URL {
         // Word files keep their headings and lists only when read from the XML directly.
         if target.ext == "md", url.pathExtension.lowercased() == "docx" {
             let markdown = try WordMarkdown.markdown(url)
@@ -71,10 +79,36 @@ enum DocumentConverter {
             try markdown.write(to: output, atomically: true, encoding: .utf8)
             return output
         }
-        // PDF: let Microsoft Word do it when it's installed, so the result matches Word's own print.
-        if target.ext == "pdf", WordAutomation.canExport(url) {
+        if target.ext == "pdf" {
             let output = OutputNaming.next(to: url, ext: "pdf")
-            if WordAutomation.exportPDF(from: url, to: output) { return output }
+            switch pdfEngine {
+            case .automatic:
+                // Prefer Office, then Pages, and keep the built-in renderer as a fallback.
+                if WordAutomation.canExport(url), WordAutomation.exportPDF(from: url, to: output) {
+                    return output
+                }
+                if PagesAutomation.canExport(url), PagesAutomation.exportPDF(from: url, to: output) {
+                    return output
+                }
+            case .microsoftWord:
+                guard WordAutomation.supports(url), WordAutomation.isInstalled else {
+                    throw ConversionError.message(L("Microsoft Word isn't available for this file"))
+                }
+                guard WordAutomation.exportPDF(from: url, to: output) else {
+                    throw ConversionError.message(L("Microsoft Word couldn't export this file as PDF"))
+                }
+                return output
+            case .applePages:
+                guard PagesAutomation.supports(url), PagesAutomation.isInstalled else {
+                    throw ConversionError.message(L("Apple Pages isn't available for this file"))
+                }
+                guard PagesAutomation.exportPDF(from: url, to: output) else {
+                    throw ConversionError.message(L("Apple Pages couldn't export this file as PDF"))
+                }
+                return output
+            case .builtIn:
+                break
+            }
         }
         func builtIn() throws -> URL {
             let document = try readDocument(url)

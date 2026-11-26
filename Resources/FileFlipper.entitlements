@@ -15,6 +15,7 @@
 		<string>com.microsoft.Word</string>
 		<string>com.microsoft.Powerpoint</string>
 		<string>com.microsoft.Excel</string>
+		<string>com.apple.Pages</string>
 	</array>
 	<key>com.apple.security.print</key>
 	<true/>

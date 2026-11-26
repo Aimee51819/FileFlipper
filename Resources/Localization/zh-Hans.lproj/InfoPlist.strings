@@ -1,1 +1,1 @@
-"NSAppleEventsUsageDescription" = "FileFlipper 会请 Microsoft Word、PowerPoint 和 Excel 把文件存成 PDF，效果和在 Office 里打印完全一样。";
+"NSAppleEventsUsageDescription" = "FileFlipper 可以请 Microsoft Office 或 Apple Pages 使用各自的排版引擎导出 PDF。";
